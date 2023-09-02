@@ -1,9 +1,12 @@
-import {StyleSheet, Text, View} from 'react-native';
-import {PageLogin} from "./pages";
 
+import {PageLogin} from "./pages";
+import {Provider} from "react-redux";
+import { store } from "./stores/index"
 export default function App() {
     return (
-        <PageLogin></PageLogin>
+        <Provider store={store}>
+            <PageLogin></PageLogin>
+        </Provider>
     );
 }
 

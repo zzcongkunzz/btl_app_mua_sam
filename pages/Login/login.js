@@ -1,8 +1,9 @@
-import {Text, TextInput, TouchableOpacity, View,} from "react-native";
+import {Keyboard, ScrollView, Text, TextInput, TouchableOpacity, View,} from "react-native";
 import {Feather} from '@expo/vector-icons';
 import styles from "./styleLogin"
 import generalStyle from "../../assets/GeneralStyle/generalStyle"
 import {useRef, useState} from "react";
+import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 
 export default function Login() {
     const [username, setUsername] = useState('');
@@ -11,8 +12,7 @@ export default function Login() {
     const [errorTextUsername, setErrorTextUsername] = useState('');
     const [errorTextPassword, setErrorTextPassword] = useState('');
     const passwordInputRef = useRef(null);
-
-
+    const disabledBtnLogin = errorTextUsername.length > 0 || errorTextPassword.length > 0 || username === '' || password === '';
     const handleShowPassword = () => {
         setShowPassword(!showPassword);
     }
@@ -36,6 +36,7 @@ export default function Login() {
         } else if (!regex.test(username)) {
             setErrorTextUsername('Tên đăng nhập chỉ được chứa các chữ cái, số, và các kí tự đặc biệt như !@.?')
         }
+
     }
 
     const handlePasswordBlur = () => {
@@ -53,8 +54,9 @@ export default function Login() {
     }
 
     return (
-        <View
-            style={[styles.container]}
+        <KeyboardAwareScrollView
+            contentContainerStyle={[styles.container]}
+            keyboardShouldPersistTaps='always'
         >
             <Text
                 style={[styles.loginItem, styles.loginText]}
@@ -73,6 +75,7 @@ export default function Login() {
                     textContentType="username"
                     autoComplete="username"
                     value={username}
+                    returnKeyType="next"
                     onChangeText={handleChangeUsername}
                     onFocus={() => {
                     }}
@@ -130,10 +133,10 @@ export default function Login() {
                 {/*btn đăng nhập*/}
                 <TouchableOpacity
                     onPress={handleLogin}
-                    disabled={(errorTextUsername.length > 0 || errorTextPassword.length > 0)}
+                    disabled={disabledBtnLogin}
                 >
                     <Text
-                        style={[generalStyle.button, (errorTextUsername.length > 0 || errorTextPassword.length > 0) && generalStyle.disabledButton]}
+                        style={[generalStyle.button, disabledBtnLogin && generalStyle.disabledButton]}
                     >
                         Đăng Nhập
                     </Text>
@@ -161,6 +164,6 @@ export default function Login() {
                 </View>
 
             </View>
-        </View>
+        </KeyboardAwareScrollView>
     );
 }
