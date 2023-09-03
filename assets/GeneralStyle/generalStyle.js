@@ -2,6 +2,15 @@ import {StyleSheet} from 'react-native';
 import appColor from "../../constant/appColor";
 
 const generalStyle = StyleSheet.create({
+    formItem: {
+        width: '80%',
+        marginTop: 10,
+    },
+    formTitle: {
+        fontSize: 30,
+        marginBottom: 10,
+        textAlign: "center",
+    },
     textInput: {
         borderWidth: 1,
         height: 50,

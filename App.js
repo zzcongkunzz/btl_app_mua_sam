@@ -1,11 +1,11 @@
 
-import {PageLogin} from "./pages";
+import {PageLogin, PageRegister} from "./pages";
 import {Provider} from "react-redux";
 import { store } from "./stores/index"
 export default function App() {
     return (
         <Provider store={store}>
-            <PageLogin></PageLogin>
+            <PageRegister></PageRegister>
         </Provider>
     );
 }

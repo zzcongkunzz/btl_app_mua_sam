@@ -28,7 +28,7 @@ export default function Login() {
         setPassword(value);
     }
 
-    const handleUsernameBlur = () => {
+    const handleBlurUsername = () => {
         const regex = new RegExp('^[0-9a-zA-Z!@.?]+$');
 
         if (username === '') {
@@ -39,7 +39,7 @@ export default function Login() {
 
     }
 
-    const handlePasswordBlur = () => {
+    const handleBlurPassword = () => {
         if (password === '') {
             setErrorTextPassword('Vui lòng điền vào mục này.')
         }
@@ -59,12 +59,12 @@ export default function Login() {
             keyboardShouldPersistTaps='always'
         >
             <Text
-                style={[styles.loginItem, styles.loginText]}
+                style={[generalStyle.formItem,generalStyle.formTitle]}
             >
                 Đăng nhập
             </Text>
             <View
-                style={[styles.loginItem]}
+                style={[generalStyle.formItem]}
             >
                 <TextInput
                     style={[
@@ -80,14 +80,14 @@ export default function Login() {
                     onFocus={() => {
                     }}
                     onSubmitEditing={handleSubmitEditingUsername}
-                    onBlur={handleUsernameBlur}
+                    onBlur={handleBlurUsername}
                 ></TextInput>
                 <Text
                     style={[generalStyle.errorText]}
                 >{errorTextUsername}</Text>
             </View>
             <View
-                style={[styles.loginItem]}
+                style={[generalStyle.formItem]}
             >
                 <View
                     style={[
@@ -109,7 +109,7 @@ export default function Login() {
                         onChangeText={handleChangePassword}
                         onFocus={() => {
                         }}
-                        onBlur={handlePasswordBlur}
+                        onBlur={handleBlurPassword}
 
                     ></TextInput>
                     <TouchableOpacity
@@ -128,7 +128,7 @@ export default function Login() {
                 >{errorTextPassword}</Text>
             </View>
             <View
-                style={[styles.loginItem]}
+                style={[generalStyle.formItem]}
             >
                 {/*btn đăng nhập*/}
                 <TouchableOpacity

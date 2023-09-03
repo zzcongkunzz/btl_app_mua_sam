@@ -6,15 +6,6 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         justifyContent: 'center',
     },
-    loginItem: {
-        width: '80%',
-        marginTop: 10,
-    },
-    loginText: {
-        fontSize: 30,
-        marginBottom: 10,
-        textAlign: "center",
-    },
     textInputPasswordBox:{
         display: "flex",
         flexDirection: "row",
