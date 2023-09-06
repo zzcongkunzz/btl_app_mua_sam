@@ -1,5 +1,4 @@
-import {Keyboard, ScrollView, Text, TextInput, TouchableOpacity, View,} from "react-native";
-import {Feather} from '@expo/vector-icons';
+import {Text, TextInput, TouchableOpacity, View,} from "react-native";
 import styles from "./styleRegister"
 import generalStyle from "../../assets/GeneralStyle/generalStyle"
 import {useRef, useState} from "react";
@@ -24,7 +23,7 @@ export default function Register() {
     const confirmPasswordInputRef = useRef(null);
 
 
-    const disabledBtnLogin = errorTextUsername.length > 0 ||
+    const disabledBtnRegister = errorTextUsername.length > 0 ||
         errorTextEmail.length > 0 ||
         errorTextPhoneNumber.length > 0 ||
         errorTextPassword.length > 0 ||
@@ -34,7 +33,7 @@ export default function Register() {
         phoneNumber === '' ||
         password === '' ||
         confirmPassword === '' ||
-        password != confirmPassword;
+        password !== confirmPassword;
 
     const handleChangeUsername = (value) => {
         setErrorTextUsername('')
@@ -104,8 +103,7 @@ export default function Register() {
             setErrorTextPassword('Vui lòng điền vào mục này.')
         } else if (password === confirmPassword) {
             setErrorTextConfirmPassword('')
-        }
-        else if (password !== confirmPassword) {
+        } else if (password !== confirmPassword) {
             setErrorTextConfirmPassword('Không khớp với mật khẩu nhập ở trên..')
         }
     }
@@ -113,8 +111,7 @@ export default function Register() {
     const handleBlurConfirmPassword = () => {
         if (confirmPassword === '') {
             setErrorTextConfirmPassword('Vui lòng điền vào mục này.')
-        }
-        else if (password !== confirmPassword) {
+        } else if (password !== confirmPassword) {
             setErrorTextConfirmPassword('Không khớp với mật khẩu nhập ở trên..')
         }
     }
@@ -137,6 +134,7 @@ export default function Register() {
 
     const handleRegister = () => {
         console.group('login value');
+
         console.log('username', username);
         console.log('email', email);
         console.log('phoneNumber', phoneNumber);
@@ -148,7 +146,7 @@ export default function Register() {
     return (
         <KeyboardAwareScrollView
             contentContainerStyle={[styles.container]}
-            keyboardShouldPersistTaps='always'
+            keyboardShouldPersistTaps='handled'
         >
             <Text
                 style={[generalStyle.formItem, generalStyle.formTitle]}
@@ -273,10 +271,10 @@ export default function Register() {
                 {/*btn đăng kí*/}
                 <TouchableOpacity
                     onPress={handleRegister}
-                    disabled={disabledBtnLogin}
+                    disabled={disabledBtnRegister}
                 >
                     <Text
-                        style={[generalStyle.button, disabledBtnLogin && generalStyle.disabledButton]}
+                        style={[generalStyle.button, disabledBtnRegister && generalStyle.disabledButton]}
                     >
                         Đăng Kí
                     </Text>

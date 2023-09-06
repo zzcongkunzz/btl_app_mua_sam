@@ -6,7 +6,7 @@ import {fakeShopeeAPI} from "./API/service";
 
 export const store = configureStore({
     reducer: {
-        StoreReducer: StoreReducer,
+        storeReducer: StoreReducer,
         [fakeShopeeAPI.reducerPath]: fakeShopeeAPI.reducer
     },
     // Thêm api middleware để enable các tính năng như caching, invalidation, polling của rtk-query

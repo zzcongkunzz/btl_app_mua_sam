@@ -7,7 +7,13 @@ export const storeSlice = createSlice({
     name: 'store',
     initialState: (initStoreReducer),
     reducers: {
-
+        setPageIndex: {
+            reducer: (state, action) => {
+                // console.log("state", state);
+                state.pageIndex = action.payload;
+                // console.log(current(state));
+            }
+        },
     },
     extraReducers: (builder) => {
         builder

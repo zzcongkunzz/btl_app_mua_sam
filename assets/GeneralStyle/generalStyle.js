@@ -44,7 +44,7 @@ const generalStyle = StyleSheet.create({
     },
     disabledButton: {
         opacity: 0.7,
-    }
+    },
 
 });
 

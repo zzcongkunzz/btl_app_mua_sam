@@ -1,9 +1,9 @@
-import {Keyboard, ScrollView, Text, TextInput, TouchableOpacity, View,} from "react-native";
+import {Text, TextInput, TouchableOpacity, View,} from "react-native";
 import {Feather} from '@expo/vector-icons';
 import styles from "./styleLogin"
 import generalStyle from "../../assets/GeneralStyle/generalStyle"
 import {useRef, useState} from "react";
-import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
+import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
 
 export default function Login() {
     const [username, setUsername] = useState('');
@@ -50,16 +50,16 @@ export default function Login() {
     }
 
     const handleLogin = () => {
-       //console.log(username, " ", password);
+        //console.log(username, " ", password);
     }
 
     return (
         <KeyboardAwareScrollView
             contentContainerStyle={[styles.container]}
-            keyboardShouldPersistTaps='always'
+            keyboardShouldPersistTaps='handled'
         >
             <Text
-                style={[generalStyle.formItem,generalStyle.formTitle]}
+                style={[generalStyle.formItem, generalStyle.formTitle]}
             >
                 Đăng nhập
             </Text>
