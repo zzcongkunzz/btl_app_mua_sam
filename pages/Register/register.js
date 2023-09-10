@@ -3,6 +3,7 @@ import styles from "./styleRegister"
 import generalStyle from "../../assets/GeneralStyle/generalStyle"
 import {useRef, useState} from "react";
 import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
+import {useNavigate, useNavigation} from 'react-router-native';
 
 export default function Register() {
     const [username, setUsername] = useState('');
@@ -22,6 +23,7 @@ export default function Register() {
     const passwordInputRef = useRef(null);
     const confirmPasswordInputRef = useRef(null);
 
+    const navigate= useNavigate();
 
     const disabledBtnRegister = errorTextUsername.length > 0 ||
         errorTextEmail.length > 0 ||
@@ -141,6 +143,10 @@ export default function Register() {
         console.log('password', password);
 
         console.groupEnd();
+    }
+
+    const handleLogin = () => {
+        navigate('/login')
     }
 
     return (
@@ -285,7 +291,9 @@ export default function Register() {
                         styles.linkLoginPage
                     ]}
                 >
-                    <TouchableOpacity>
+                    <TouchableOpacity
+                        onPress={handleLogin}
+                    >
                         <Text
                             style={[generalStyle.linkText]}
                         >

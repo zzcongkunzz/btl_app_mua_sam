@@ -4,6 +4,7 @@ import styles from "./styleLogin"
 import generalStyle from "../../assets/GeneralStyle/generalStyle"
 import {useRef, useState} from "react";
 import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
+import {useNavigate} from "react-router-native";
 
 export default function Login() {
     const [username, setUsername] = useState('');
@@ -13,6 +14,9 @@ export default function Login() {
     const [errorTextPassword, setErrorTextPassword] = useState('');
     const passwordInputRef = useRef(null);
     const disabledBtnLogin = errorTextUsername.length > 0 || errorTextPassword.length > 0 || username === '' || password === '';
+
+    const navigate= useNavigate();
+
     const handleShowPassword = () => {
         setShowPassword(!showPassword);
     }
@@ -51,6 +55,10 @@ export default function Login() {
 
     const handleLogin = () => {
         //console.log(username, " ", password);
+    }
+
+    const handleRegister = () => {
+        navigate('/register')
     }
 
     return (
@@ -154,7 +162,9 @@ export default function Login() {
                             Quên mật khẩu
                         </Text>
                     </TouchableOpacity>
-                    <TouchableOpacity>
+                    <TouchableOpacity
+                        onPress={handleRegister}
+                    >
                         <Text
                             style={[generalStyle.linkText]}
                         >

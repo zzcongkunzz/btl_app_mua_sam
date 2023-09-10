@@ -45,7 +45,10 @@ const generalStyle = StyleSheet.create({
     disabledButton: {
         opacity: 0.7,
     },
-
+    text: {
+        fontSize: 14,
+        lineHeight: 17,
+    }
 });
 
 export default generalStyle;
