@@ -42,7 +42,7 @@ const styles = StyleSheet.create({
         color: appColor.red,
         fontSize: 16,
     },
-    productQuantityPurchased: {
+    productQuantitySold: {
         fontSize: 11
     },
     productFavourite: {

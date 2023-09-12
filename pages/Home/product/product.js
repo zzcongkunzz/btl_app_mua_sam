@@ -45,9 +45,9 @@ export default function Product(){
                 <View
                     style={[styles.productContent]}
                 >
-                    <Text
-                        style={[generalStyle.text]}
-                    >áo khoác nữ sinh Harajuku JK 100% ảnh thật áo khoác nữ sinh Harajuku</Text>
+                    <Text style={[generalStyle.text]}>
+                        áo khoác nữ sinh Harajuku JK 100% ảnh thật áo khoác nữ sinh Harajuku
+                    </Text>
                     <View
                         style={[styles.productSell]}
                     >
@@ -62,7 +62,7 @@ export default function Product(){
                             >200.000</Text>
                         </View>
                         <Text
-                            style={[styles.productQuantityPurchased]}
+                            style={[styles.productQuantitySold]}
                         >Đã bán 8k</Text>
                     </View>
                 </View>

@@ -82,9 +82,7 @@ function ProductHeader() {
                 style={styles.listProductHeaderItem}
             >
                 <TouchableOpacity
-                    style={[
-                        styles.productHeaderItem,
-                    ]}
+                    style={[styles.productHeaderItem,]}
                     onPress={handleOnPressSortByNew}
                 >
                     <Text
@@ -95,9 +93,7 @@ function ProductHeader() {
                 </TouchableOpacity>
                 <View style={[styles.splittingLine,]}></View>
                 <TouchableOpacity
-                    style={[
-                        styles.productHeaderItem
-                    ]}
+                    style={[styles.productHeaderItem]}
                     onPress={handleOnPressSortByBestseller}
                 >
                     <Text
@@ -108,9 +104,7 @@ function ProductHeader() {
                 </TouchableOpacity>
                 <View style={[styles.splittingLine,]}></View>
                 <TouchableOpacity
-                    style={[
-                        styles.productHeaderItem
-                    ]}
+                    style={[styles.productHeaderItem]}
                     onPress={handleOnPressSortByPrice}
                 >
                     <Text
@@ -119,9 +113,7 @@ function ProductHeader() {
                         ]}
                     >Giá</Text>
                     <View
-                        style={[
-                            styles.productHeaderItemIcon
-                        ]}
+                        style={[styles.productHeaderItemIcon]}
                     >
                         {priceIncreasesDecreases ?
                             <AntDesign name="arrowdown" size={24} color="red"/> :
@@ -132,9 +124,7 @@ function ProductHeader() {
                 </TouchableOpacity>
                 <View style={[styles.splittingLine,]}></View>
                 <TouchableOpacity
-                    style={[
-                        styles.productHeaderItem
-                    ]}
+                    style={[styles.productHeaderItem]}
                     onPress={handleOnPressCategory}
                 >
                     <Text
@@ -144,9 +134,7 @@ function ProductHeader() {
                     >{} Danh mục</Text>
 
                     <View
-                        style={[
-                            styles.productHeaderItemIcon
-                        ]}
+                        style={[styles.productHeaderItemIcon]}
                     >
                         {categoryExpandMore ?
                             <MaterialIcons name="expand-more" size={24}
@@ -164,20 +152,14 @@ function ProductHeader() {
                     onPress={handleOnPressCategory}
                 >
                     <View
-                        style={[
-                            styles.listCategoryContainer
-                        ]}
+                        style={[styles.listCategoryContainer]}
                     >
                         <TouchableWithoutFeedback>
                             <View
-                                style={[
-                                    styles.listCategory
-                                ]}
+                                style={[styles.listCategory]}
                             >
                                 <ScrollView
-                                    contentContainerStyle={[
-                                        styles.listCategoryScrollView
-                                    ]}
+                                    contentContainerStyle={[styles.listCategoryScrollView]}
                                 >
                                     {DATA_CATEGORY?.map((item) => {
                                         return (

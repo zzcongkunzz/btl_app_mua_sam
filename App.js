@@ -1,9 +1,8 @@
-import {PageLogin, PageRegister} from "./pages";
+import {PageHome, PageLogin, PageProductDetails, PageRegister} from "./pages";
 import {Provider} from "react-redux";
 import {store} from "./stores/index"
 import {DefaultLayout} from "./layouts";
-import {NativeRouter, Route, Routes, use} from "react-router-native";
-import Home from "./pages/Home/home";
+import {NativeRouter, Route, Routes} from "react-router-native";
 
 export default function App() {
     return (
@@ -18,7 +17,8 @@ export default function App() {
                     <Route exact path="/"
                            element={
                                <DefaultLayout>
-                                   <Home></Home>
+                                   {/*<PageHome></PageHome>*/}
+                                   <PageProductDetails></PageProductDetails>
                                </DefaultLayout>
                            }
                     />
