@@ -10,6 +10,38 @@ export default function ProductDetails() {
     const quantityStar = 2.5;
     const listStar = [1, 2, 3, 4, 5];
 
+    const handleOnChangeQuantityPurchased = (value) => {
+        value = value.replace(/\s|[^0-9]/, '');
+        if (value === '' || value === '0') {
+            setQuantityPurchased("1");
+        } else if (Number(value) >= 999) {
+            setQuantityPurchased("999")
+        } else {
+            value = Number(value);
+            setQuantityPurchased('' + value);
+        }
+    }
+
+    const handleOnPressQuantityPurchasedMinus = () => {
+        if (Number(quantityPurchased) > 1) {
+            setQuantityPurchased(`${Number(quantityPurchased) - 1}`);
+        }
+    }
+
+    const handleOnPressQuantityPurchasedPlus = () => {
+        if (Number(quantityPurchased) < 999) {
+            setQuantityPurchased(`${Number(quantityPurchased) + 1}`);
+        }
+    }
+
+    const handleOnPressAddToCart = () => {
+
+    }
+
+    const handleOnPressBuyNow = () => {
+
+    }
+
     return (
         <View
             style={styles.container}
@@ -85,22 +117,21 @@ export default function ProductDetails() {
                         <View style={[styles.quantityPurchasedBox]}>
                             <TouchableOpacity
                                 style={[styles.quantityPurchasedBtn]}
-                                // onPress={handleOnPressQuantityPurchasedPlus}
+                                onPress={handleOnPressQuantityPurchasedMinus}
                             >
-                                <AntDesign name="minus" size={24} color="black" />
+                                <AntDesign name="minus" size={24} color="black"/>
                             </TouchableOpacity>
                             <TextInput
                                 style={[styles.quantityPurchasedBtn, styles.quantityPurchasedBtnCenter]}
                                 value={quantityPurchased}
                                 textAlign={"center"}
-                                onChangeText={setQuantityPurchased}
-                                // onChangeText={handleOnChangeQuantityPurchased}
+                                onChangeText={handleOnChangeQuantityPurchased}
                             ></TextInput>
                             <TouchableOpacity
                                 style={[styles.quantityPurchasedBtn]}
-                                // onPress={handleOnPressQuantityPurchasedPlus}
+                                onPress={handleOnPressQuantityPurchasedPlus}
                             >
-                                <AntDesign name="plus" size={24} color="black" />
+                                <AntDesign name="plus" size={24} color="black"/>
                             </TouchableOpacity>
                         </View>
                         <View style={[styles.quantitySoldBox]}>
@@ -108,11 +139,17 @@ export default function ProductDetails() {
                         </View>
                     </View>
                     <View style={[styles.purchaseBox]}>
-                        <TouchableOpacity style={[styles.btnAddToCart]}>
-                            <View style={[]}><FontAwesome5 name="cart-plus" size={24} color={appColor.red} /></View>
+                        <TouchableOpacity
+                            style={[styles.btnAddToCart]}
+                            onPress={handleOnPressAddToCart}
+                        >
+                            <View style={[]}><FontAwesome5 name="cart-plus" size={24} color={appColor.red}/></View>
                             <Text style={[styles.btnAddToCartText]}>Thêm Vào Giỏ Hàng</Text>
                         </TouchableOpacity>
-                        <TouchableOpacity style={[styles.btnBuyNow]}>
+                        <TouchableOpacity
+                            style={[styles.btnBuyNow]}
+                            onPress={handleOnPressBuyNow}
+                        >
                             <Text style={[styles.btnBuyNowText]}> Mua Ngay</Text>
                         </TouchableOpacity>
                     </View>

@@ -4,7 +4,7 @@ import app from "react-native/template/App";
 
 const styles = StyleSheet.create({
     container: {
-        backgroundColor: "rgba(178,172,172,0.2)",
+        // backgroundColor: "rgba(178,172,172,0.2)",
         width: "100%",
         height: "100%",
     },

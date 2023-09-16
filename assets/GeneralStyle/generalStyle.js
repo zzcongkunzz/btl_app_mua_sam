@@ -48,6 +48,10 @@ const generalStyle = StyleSheet.create({
     text: {
         fontSize: 14,
         lineHeight: 17,
+    },
+    checkBox: {
+        width: 25,
+        height: 25,
     }
 });
 

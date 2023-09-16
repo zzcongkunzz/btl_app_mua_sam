@@ -1,4 +1,4 @@
-import {PageHome, PageLogin, PageProductDetails, PageRegister} from "./pages";
+import {PageCart, PageHome, PageLogin, PageProductDetails, PageRegister} from "./pages";
 import {Provider} from "react-redux";
 import {store} from "./stores/index"
 import {DefaultLayout} from "./layouts";
@@ -16,10 +16,11 @@ export default function App() {
                 <Routes>
                     <Route exact path="/"
                            element={
-                               <DefaultLayout>
-                                   {/*<PageHome></PageHome>*/}
-                                   <PageProductDetails></PageProductDetails>
-                               </DefaultLayout>
+                               // <DefaultLayout>
+                               //     {/*<PageHome></PageHome>*/}
+                               //     <PageProductDetails></PageProductDetails>
+                               // </DefaultLayout>
+                               <PageCart> </PageCart>
                            }
                     />
                     <Route exact path="/register"

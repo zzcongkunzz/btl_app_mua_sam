@@ -15,7 +15,7 @@ export default function Product(){
                 <ImageBackground
                     style={[styles.productImage]}
                     source={require("../../../assets/img/sanpham1.jpg")}
-                    resizeMode="stretch"
+                    resizeMode="cover"
                 >
                     <View>
                         <View
