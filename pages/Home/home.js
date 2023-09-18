@@ -25,6 +25,12 @@ function Home() {
                     <Product></Product>
                     <Product></Product>
                     <Product></Product>
+                    <Product></Product>
+                    <Product></Product>
+                    <Product></Product>
+                    <Product></Product>
+                    <Product></Product>
+                    <Product></Product>
                 </View>
 
             </ScrollView>

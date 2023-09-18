@@ -14,6 +14,24 @@ export const storeSlice = createSlice({
                 // console.log(current(state));
             }
         },
+        nextPage: {
+            reducer: (state, action) => {
+                // console.log("state", state);
+                const newPageHistory = state.pageHistory;
+                newPageHistory.push(action.payload);
+                state.pageHistory = newPageHistory;
+                // console.log(current(state));
+            }
+        },
+        backPage: {
+            reducer: (state, action) => {
+                // console.log("state", state);
+                const newPageHistory = state.pageHistory;
+                newPageHistory.pop();
+                state.pageHistory = newPageHistory;
+                // console.log(current(state));
+            }
+        }
     },
     extraReducers: (builder) => {
         builder

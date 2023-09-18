@@ -3,12 +3,20 @@ import styles from "./styleFooter";
 import {AntDesign, Foundation, Ionicons, MaterialCommunityIcons, SimpleLineIcons} from "@expo/vector-icons";
 import {useState} from "react";
 import {useDispatch, useSelector} from "react-redux";
-import {storeSlice} from "../../../stores/StoreReducer";
+import {storeSlice} from "../../stores/StoreReducer";
+import {useNavigate} from "react-router-native";
 
 function Footer() {
     const dispatch = useDispatch();
     const pageIndex = useSelector((state) => state.storeReducer.pageIndex);
-    console.log("pageIndex", pageIndex);
+
+    const navigate= useNavigate();
+
+    const handleOnPressHome = () => {
+        dispatch(storeSlice.actions.setPageIndex("Home"));
+        dispatch(storeSlice.actions.nextPage('/'));
+        navigate(`/`);
+    }
 
     return (
         <View
@@ -16,9 +24,7 @@ function Footer() {
         >
             <TouchableOpacity
                 style={[styles.footerItem]}
-                onPress={() => {
-                    dispatch(storeSlice.actions.setPageIndex("Home"))
-                }}
+                onPress={handleOnPressHome}
             >
                 <MaterialCommunityIcons name="home-outline" size={24} color={pageIndex === 'Home' ? "red" : "black"}/>
                 <Text

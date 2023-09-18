@@ -2,10 +2,20 @@ import {FlatList, ScrollView, Text, TextInput, TouchableOpacity, View} from "rea
 import styles from "./styleHeader";
 import {useState} from "react";
 import {Ionicons, Feather, AntDesign} from '@expo/vector-icons';
+import {useNavigate, useLocation} from "react-router-native";
+import {useDispatch, useSelector} from "react-redux";
+import {storeSlice} from "../../stores/StoreReducer";
 
 function Header() {
+    const dispatch = useDispatch();
     const [nameProduct, setNameProduct] = useState('');
     const [onFocusSearchInput, setOnFocusSearchInput] = useState(false);
+
+    const navigate= useNavigate();
+    const location = useLocation();
+    const pageHistory = useSelector((state) => state.storeReducer.pageHistory);
+
+    const enablePageBackButton = !(['/',].indexOf(location.pathname) > -1);
 
     const handleFocusSearchInput = () => {
         setOnFocusSearchInput(true);
@@ -15,6 +25,19 @@ function Header() {
         setOnFocusSearchInput(false);
     }
 
+    const handleOnPressCart = () => {
+        dispatch(storeSlice.actions.nextPage(`/cart`));
+        navigate('/cart');
+    }
+
+    const handleOnPressBackButton = () => {
+        if(pageHistory.length >= 2){
+            const path = pageHistory[pageHistory.length - 2]
+            navigate(`${path}`);
+            dispatch(storeSlice.actions.backPage());
+        }
+    }
+
     return (
         <View
             style={[styles.container,]}
@@ -22,13 +45,16 @@ function Header() {
             <View
                 style={[styles.searchProductBox,]}
             >
-                {/*<TouchableOpacity*/}
-                {/*    style={[*/}
-                {/*        styles.btnComeBack,*/}
-                {/*    ]}*/}
-                {/*>*/}
-                {/*    <AntDesign name="arrowleft" size={30} color="white" />*/}
-                {/*</TouchableOpacity>*/}
+                {enablePageBackButton &&
+                    <TouchableOpacity
+                        style={[
+                            styles.btnComeBack,
+                        ]}
+                        onPress={handleOnPressBackButton}
+                    >
+                        <AntDesign name="arrowleft" size={30} color="white" />
+                    </TouchableOpacity>
+                }
                 <View
                     style={styles.searchProduct}
                 >
@@ -60,6 +86,7 @@ function Header() {
                     style={[
                         styles.shoppingCart,
                     ]}
+                    onPress={handleOnPressCart}
                 >
                     <View>
                         <Feather name="shopping-cart" size={30} color="white"/>

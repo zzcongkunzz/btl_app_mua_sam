@@ -1,10 +1,10 @@
 import {ScrollView, View} from "react-native";
 import Header from "../../component/Header/header";
-import styles from "./styleDefaultLayout";
+import styles from "./styleLayoutWithoutFooter";
 import Footer from "../../component/Footer/footer";
 
 
-function DefaultLayout({children}) {
+function LayoutWithoutHeader({children}) {
     return (
         <View
             style={styles.container}
@@ -15,9 +15,8 @@ function DefaultLayout({children}) {
             >
                 {children}
             </ScrollView>
-            <Footer></Footer>
         </View>
     );
 }
 
-export default DefaultLayout
+export default LayoutWithoutHeader

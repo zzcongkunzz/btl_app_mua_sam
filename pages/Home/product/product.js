@@ -1,13 +1,24 @@
 import {Image, ImageBackground, Text, TouchableOpacity, TouchableWithoutFeedback, View} from "react-native";
 import styles from "./styleProduct";
 import generalStyle from "../../../assets/GeneralStyle/generalStyle"
+import {useNavigate} from "react-router-native";
+import {useDispatch} from "react-redux";
+import {storeSlice} from "../../../stores/StoreReducer";
 
 
-export default function Product(){
+export default function Product() {
+    const dispatch = useDispatch();
 
-    return(
+    const navigate = useNavigate();
+
+    const handleOnPressProduct = () => {
+        dispatch(storeSlice.actions.nextPage(`/productDetails/${111}`));
+        navigate(`/productDetails/${111}`);
+    }
+
+    return (
         <TouchableWithoutFeedback
-            onPress={() => {console.log("press")}}
+            onPress={handleOnPressProduct}
         >
             <View
                 style={styles.container}

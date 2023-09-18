@@ -116,8 +116,8 @@ function ProductHeader() {
                         style={[styles.productHeaderItemIcon]}
                     >
                         {priceIncreasesDecreases ?
-                            <AntDesign name="arrowdown" size={24} color="red"/> :
-                            <AntDesign name="arrowup" size={24}
+                            <AntDesign name="arrowdown" size={20} color="red"/> :
+                            <AntDesign name="arrowup" size={20}
                                        color={productHeaderItemFollow === 'Sort By Price' ? "red" : "black"}/>
                         }
                     </View>
@@ -137,9 +137,9 @@ function ProductHeader() {
                         style={[styles.productHeaderItemIcon]}
                     >
                         {categoryExpandMore ?
-                            <MaterialIcons name="expand-more" size={24}
+                            <MaterialIcons name="expand-more" size={20}
                                            color={productHeaderCategoryFollow ? "red" : "black"}/> :
-                            <MaterialIcons name="expand-less" size={24}
+                            <MaterialIcons name="expand-less" size={20}
                                            color={productHeaderCategoryFollow ? "red" : "black"}/>
                         }
                     </View>

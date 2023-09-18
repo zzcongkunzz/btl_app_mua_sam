@@ -5,14 +5,33 @@ import ProductOfCart from "./productOfCart/productOfCart";
 import {useState} from "react";
 import Checkbox from "expo-checkbox";
 import generalStyle from "../../assets/GeneralStyle/generalStyle";
+import {storeSlice} from "../../stores/StoreReducer";
+import {useDispatch, useSelector} from "react-redux";
+import {useNavigate} from "react-router-native";
 
 export default function Cart() {
+    const dispatch = useDispatch();
+
+    const navigate= useNavigate();
+    const pageHistory = useSelector((state) => state.storeReducer.pageHistory);
+
     const [isCheckedAll, setCheckedAll] = useState(false);
+
+    const handleOnPressBackButton = () => {
+        if(pageHistory.length >= 2){
+            const path = pageHistory[pageHistory.length - 2]
+            navigate(`${path}`);
+            dispatch(storeSlice.actions.backPage());
+        }
+    }
 
     return (
         <View style={[styles.container]}>
             <View style={[styles.header]}>
-                <TouchableOpacity style={[styles.btnComeBack,]}>
+                <TouchableOpacity
+                    style={[styles.btnComeBack,]}
+                    onPress={handleOnPressBackButton}
+                >
                     <AntDesign name="arrowleft" size={30} color="red"/>
                 </TouchableOpacity>
                 <Text style={[styles.cartText,]}>Giỏi hàng</Text>
