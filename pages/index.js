@@ -3,5 +3,5 @@ export {default as PageRegister} from './Register/register'
 export {default as PageHome} from './Home/home'
 export {default as PageProductDetails} from './ProductDetails/productDetails'
 export {default as PageCart} from './Cart/cart'
-
+export {default as PageUser} from './User/user'
 

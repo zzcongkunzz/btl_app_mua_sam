@@ -17,11 +17,12 @@ function Header() {
 
     const enablePageBackButton = !(['/',].indexOf(location.pathname) > -1);
 
+
     const handleFocusSearchInput = () => {
         setOnFocusSearchInput(true);
     }
 
-    const handleBlurSearchInput = () => {
+    const handleOnBlurSearchInput = () => {
         setOnFocusSearchInput(false);
     }
 
@@ -33,9 +34,10 @@ function Header() {
     const handleOnPressBackButton = () => {
         if(pageHistory.length >= 2){
             const path = pageHistory[pageHistory.length - 2]
-            navigate(`${path}`);
+            navigate(path);
             dispatch(storeSlice.actions.backPage());
         }
+        // navigate('/');
     }
 
     return (
@@ -67,7 +69,7 @@ function Header() {
                         placeholder="Tìm kiếm sản phẩm"
                         placeholderTextColor="#f54c2c"
                         onFocus={handleFocusSearchInput}
-                        onBlur={handleBlurSearchInput}
+                        onBlur={handleOnBlurSearchInput}
                     ></TextInput>
                     <TouchableOpacity
                         style={[

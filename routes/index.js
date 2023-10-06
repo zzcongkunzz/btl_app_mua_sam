@@ -1,5 +1,5 @@
-import {PageCart, PageHome, PageLogin, PageProductDetails, PageRegister} from "../pages";
-import {DefaultLayout, LayoutWithoutFooter} from "../layouts";
+import {PageCart, PageHome, PageLogin, PageProductDetails, PageRegister, PageUser} from "../pages";
+import {DefaultLayout, LayoutWithoutFooter, LayoutWithoutHeader} from "../layouts";
 
 const publicRouter = [
     {
@@ -34,6 +34,14 @@ const publicRouter = [
         path: '/cart',
         element: (() => (
             <PageCart></PageCart>
+        ))()
+    },
+    {
+        path: '/user',
+        element: (() => (
+            <LayoutWithoutHeader>
+                <PageUser></PageUser>
+            </LayoutWithoutHeader>
         ))()
     },
 ]

@@ -69,7 +69,7 @@ export default function Register() {
         setConfirmPassword(value);
     }
 
-    const handleBlurUsername = () => {
+    const handleOnBlurUsername = () => {
         const regex = new RegExp('^[0-9a-zA-Z!@.?]+$');
 
         if (username === '') {
@@ -80,7 +80,7 @@ export default function Register() {
 
     }
 
-    const handleBlurEmail = () => {
+    const handleOnBlurEmail = () => {
         const regex = new RegExp('^[0-9a-zA-Z]+@[0-9a-zA-Z]{2,}(\\.[0-9a-zA-Z]+){1,3}$');
 
         if (email === '') {
@@ -90,7 +90,7 @@ export default function Register() {
         }
     }
 
-    const handleBlurPhoneNumber = () => {
+    const handleOnBlurPhoneNumber = () => {
         const regex = new RegExp('^0[0-9]{9}$');
         if (phoneNumber === '') {
             setErrorTextPhoneNumber('Vui lòng điền vào mục này.')
@@ -100,7 +100,7 @@ export default function Register() {
         }
     }
 
-    const handleBlurPassword = () => {
+    const handleOnBlurPassword = () => {
         if (password === '') {
             setErrorTextPassword('Vui lòng điền vào mục này.')
         } else if (password === confirmPassword) {
@@ -110,7 +110,7 @@ export default function Register() {
         }
     }
 
-    const handleBlurConfirmPassword = () => {
+    const handleOnBlurConfirmPassword = () => {
         if (confirmPassword === '') {
             setErrorTextConfirmPassword('Vui lòng điền vào mục này.')
         } else if (password !== confirmPassword) {
@@ -174,7 +174,7 @@ export default function Register() {
                     onFocus={() => {
                     }}
                     onSubmitEditing={handleSubmitEditingUsername}
-                    onBlur={handleBlurUsername}
+                    onBlur={handleOnBlurUsername}
                 ></TextInput>
                 <Text
                     style={[generalStyle.errorText]}
@@ -196,7 +196,7 @@ export default function Register() {
                     onFocus={() => {
                     }}
                     onSubmitEditing={handleSubmitEditingEmail}
-                    onBlur={handleBlurEmail}
+                    onBlur={handleOnBlurEmail}
                 ></TextInput>
                 <Text
                     style={[generalStyle.errorText]}
@@ -218,7 +218,7 @@ export default function Register() {
                     onFocus={() => {
                     }}
                     onSubmitEditing={handleSubmitEditingPhoneNumber}
-                    onBlur={handleBlurPhoneNumber}
+                    onBlur={handleOnBlurPhoneNumber}
                 ></TextInput>
                 <Text
                     style={[generalStyle.errorText]}
@@ -240,7 +240,7 @@ export default function Register() {
                     onFocus={() => {
                     }}
                     onSubmitEditing={handleSubmitEditingPassword}
-                    onBlur={handleBlurPassword}
+                    onBlur={handleOnBlurPassword}
 
                 ></TextInput>
 
@@ -263,7 +263,7 @@ export default function Register() {
                     onChangeText={handleChangeConfirmPassword}
                     onFocus={() => {
                     }}
-                    onBlur={handleBlurConfirmPassword}
+                    onBlur={handleOnBlurConfirmPassword}
 
                 ></TextInput>
 

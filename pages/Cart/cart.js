@@ -20,7 +20,7 @@ export default function Cart() {
     const handleOnPressBackButton = () => {
         if(pageHistory.length >= 2){
             const path = pageHistory[pageHistory.length - 2]
-            navigate(`${path}`);
+            navigate(path);
             dispatch(storeSlice.actions.backPage());
         }
     }

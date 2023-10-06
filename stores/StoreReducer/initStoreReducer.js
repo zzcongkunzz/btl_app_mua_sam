@@ -1,6 +1,9 @@
 export const initStoreReducer = {
     ACCESS_TOKEN: null,
-    ROLES: [],
+    roles: [],
+    user: {
+
+    },
     pageIndex: 'Home',
     pageHistory: ['/'],
 };

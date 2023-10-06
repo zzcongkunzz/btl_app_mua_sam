@@ -18,6 +18,12 @@ function Footer() {
         navigate(`/`);
     }
 
+    const handleOnPressUser = () => {
+        dispatch(storeSlice.actions.setPageIndex("User"));
+        dispatch(storeSlice.actions.nextPage('/user'));
+        navigate(`/user`);
+    }
+
     return (
         <View
             style={styles.container}
@@ -57,10 +63,7 @@ function Footer() {
             </TouchableOpacity>
             <TouchableOpacity
                 style={[styles.footerItem]}
-                onPress={() => {
-                    dispatch(storeSlice.actions.setPageIndex("User"))
-
-                }}
+                onPress={handleOnPressUser}
             >
                 <SimpleLineIcons name="user" size={24} color={pageIndex === 'User' ? "red" : "black"}/>
                 <Text

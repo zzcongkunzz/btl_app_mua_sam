@@ -54,14 +54,7 @@ function ProductHeader() {
         setCategoryExpandMore(!categoryExpandMore);
     }
 
-    const handleOnPressCloseListCategory = () => {
-        setCategoryExpandMore(false);
-        if(categorySelected.length === 0){
-            setProductHeaderCategoryFollow(false);
-        }
-    }
-
-    const handleonPressCategoryItem = (item) => {
+    const handleOnPressCategoryItem = (item) => {
         const index = categorySelected?.indexOf(item.name);
         const updatedCategories = [...categorySelected];
         if (index > -1) {
@@ -169,7 +162,7 @@ function ProductHeader() {
                                                     styles.categoryItem,
                                                     categorySelected?.includes(item.name) && styles.categoryItemFollow
                                                 ]}
-                                                onPress={() => handleonPressCategoryItem(item)}
+                                                onPress={() => handleOnPressCategoryItem(item)}
                                             >
                                                 <Text
                                                     style={[

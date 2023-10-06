@@ -5,8 +5,13 @@ import generalStyle from "../../assets/GeneralStyle/generalStyle"
 import {useRef, useState} from "react";
 import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
 import {useNavigate} from "react-router-native";
+import {useDispatch} from "react-redux";
+import {storeSlice} from "../../stores/StoreReducer";
 
 export default function Login() {
+    const dispatch = useDispatch();
+    const navigate= useNavigate();
+
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
     const [showPassword, setShowPassword] = useState(false);
@@ -15,7 +20,7 @@ export default function Login() {
     const passwordInputRef = useRef(null);
     const disabledBtnLogin = errorTextUsername.length > 0 || errorTextPassword.length > 0 || username === '' || password === '';
 
-    const navigate= useNavigate();
+
 
     const handleShowPassword = () => {
         setShowPassword(!showPassword);
@@ -32,7 +37,7 @@ export default function Login() {
         setPassword(value);
     }
 
-    const handleBlurUsername = () => {
+    const handleOnBlurUsername = () => {
         const regex = new RegExp('^[0-9a-zA-Z!@.?]+$');
 
         if (username === '') {
@@ -43,7 +48,7 @@ export default function Login() {
 
     }
 
-    const handleBlurPassword = () => {
+    const handleOnBlurPassword = () => {
         if (password === '') {
             setErrorTextPassword('Vui lòng điền vào mục này.')
         }
@@ -55,6 +60,8 @@ export default function Login() {
 
     const handleLogin = () => {
         //console.log(username, " ", password);
+        dispatch(storeSlice.actions.setAccessToken("access token"));
+        navigate('/user')
     }
 
     const handleRegister = () => {
@@ -88,7 +95,7 @@ export default function Login() {
                     onFocus={() => {
                     }}
                     onSubmitEditing={handleSubmitEditingUsername}
-                    onBlur={handleBlurUsername}
+                    onBlur={handleOnBlurUsername}
                 ></TextInput>
                 <Text
                     style={[generalStyle.errorText]}
@@ -117,7 +124,7 @@ export default function Login() {
                         onChangeText={handleChangePassword}
                         onFocus={() => {
                         }}
-                        onBlur={handleBlurPassword}
+                        onBlur={handleOnBlurPassword}
 
                     ></TextInput>
                     <TouchableOpacity

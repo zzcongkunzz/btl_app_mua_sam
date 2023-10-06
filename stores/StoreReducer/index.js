@@ -14,6 +14,13 @@ export const storeSlice = createSlice({
                 // console.log(current(state));
             }
         },
+        setAccessToken: {
+            reducer: (state, action) => {
+                // console.log("state", state);
+                state.ACCESS_TOKEN = action.payload;
+                // console.log(current(state));
+            }
+        },
         nextPage: {
             reducer: (state, action) => {
                 // console.log("state", state);
