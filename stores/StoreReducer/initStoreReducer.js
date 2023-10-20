@@ -1,6 +1,6 @@
 export const initStoreReducer = {
     ACCESS_TOKEN: null,
-    roles: [],
+    roles: null,
     user: {
 
     },

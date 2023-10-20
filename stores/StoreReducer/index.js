@@ -21,6 +21,13 @@ export const storeSlice = createSlice({
                 // console.log(current(state));
             }
         },
+        setUser: {
+            reducer: (state, action) => {
+                // console.log("state", state);
+                state.user = action.payload;
+                // console.log(current(state));
+            }
+        },
         nextPage: {
             reducer: (state, action) => {
                 // console.log("state", state);

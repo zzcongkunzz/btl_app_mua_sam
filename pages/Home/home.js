@@ -1,7 +1,7 @@
 import {Image, ScrollView, View} from "react-native";
 import styles from "./styleHome";
-import ProductHeader from "./productHeader/productHeader";
-import Product from "./product/product";
+import ProductHeader from "./ProductHeader/productHeader";
+import Product from "./Product/product";
 
 function Home() {
 

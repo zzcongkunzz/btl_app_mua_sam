@@ -1,38 +1,44 @@
 import styles from "./styleUserLogin"
-import {Text, TextInput, TouchableOpacity, View} from "react-native";
+import {Text, TextInput, ToastAndroid, TouchableOpacity, View} from "react-native";
 import {useRef, useState} from "react";
 import generalStyle from "../../../assets/GeneralStyle/generalStyle";
-import {useDispatch} from "react-redux";
+import {useDispatch, useSelector} from "react-redux";
 import {storeSlice} from "../../../stores/StoreReducer";
+import {useLoginMutation, useUpdateUserMutation} from "../../../stores/API/service";
 
 
 export default function UserLogin() {
     const dispatch = useDispatch();
 
-    const [name, setName] = useState('Đặng Thành Công');
-    const [gender, setGender] = useState('Nam');
-    const [dateOfBirth, setDateOfBirth] = useState('20/05/2002');
-    const [email, setEmail] = useState('dangcong200502@gmail.com');
-    const [phoneNumber, setPhoneNumber] = useState('0914133971');
+    const user = useSelector((state) => state.storeReducer.user);
+
+    const [name, setName] = useState(user?.fullName ?? '');
+    const [gender, setGender] = useState(user?.gender ?? '');
+    const [address, setAddress] = useState( user?.address ?? '');
+    const [email, setEmail] = useState( user?.email ?? '');
+    const [phoneNumber, setPhoneNumber] = useState( user?.phoneNumber ?? '');
 
     const [errorTextName, setErrorTextName] = useState('');
     const [errorTextGender, setErrorTextGender] = useState('');
-    const [errorTextDateOfBirth, setErrorTextDateOfBirth] = useState('');
+    const [errorTextAddress, setErrorTextAddress] = useState('');
     const [errorTextEmail, setErrorTextEmail] = useState('');
     const [errorTextPhoneNumber, setErrorTextPhoneNumber] = useState('');
     const [changeInformation, setChangeInformation] = useState(false);
 
     const nameInputRef = useRef(null);
     const genderInputRef = useRef(null);
-    const dateOfBirthInputRef = useRef(null);
+    const addressInputRef = useRef(null);
     const emailInputRef = useRef(null);
     const phoneNumberInputRef = useRef(null);
+
+    // API
+    const [updateUser, updateUserResult] = useUpdateUserMutation();
 
     const disabledBtnSaveInformation = errorTextName.length > 0 ||
         errorTextEmail.length > 0 ||
         errorTextPhoneNumber.length > 0 ||
         errorTextGender.length > 0 ||
-        errorTextDateOfBirth.length > 0 ||
+        errorTextAddress.length > 0 ||
         email === '' ||
         phoneNumber === '' ||
         changeInformation === false;
@@ -47,10 +53,10 @@ export default function UserLogin() {
         setErrorTextGender('')
         setGender(value);
     }
-    const handleChangeDateOfBirth = (value) => {
+    const handleChangeAddress = (value) => {
         setChangeInformation(true);
-        setErrorTextDateOfBirth('')
-        setDateOfBirth(value);
+        setErrorTextAddress('')
+        setAddress(value);
     }
     const handleChangeEmail= (value) => {
         setChangeInformation(true);
@@ -94,7 +100,37 @@ export default function UserLogin() {
     }
 
     const handleLogOut = () => {
+        ToastAndroid.show('Đăng xuất thành công!', ToastAndroid.SHORT, ToastAndroid.CENTER, );
+        dispatch(storeSlice.actions.setUser(null));
         dispatch(storeSlice.actions.setAccessToken(null));
+    }
+
+    const handleUpdateUser = async () => {
+        user.fullName = name;
+        user.email = email;
+        user.gender = gender;
+        user.phoneNumber = phoneNumber;
+        user.address = address;
+
+
+
+        await updateUser({
+            user,
+        }).unwrap()
+            .then((originalPromiseResult) => {
+                console.log(originalPromiseResult);
+                if(originalPromiseResult.users != null){
+                    dispatch(storeSlice.actions.setUser(originalPromiseResult.users));
+                    // dispatch(storeSlice.actions.setAccessToken("access token"));
+                    ToastAndroid.show('Lưu thành công!', ToastAndroid.SHORT, ToastAndroid.CENTER,);
+                }
+                else {
+                    ToastAndroid.show('Lưu thất bại!', ToastAndroid.SHORT, ToastAndroid.CENTER,);
+                }
+            })
+            .catch((ex) => {
+                console.log("Exception: ,", ex)
+            })
     }
 
     return (
@@ -141,21 +177,21 @@ export default function UserLogin() {
             <View style={[styles.line]}>
                 <View style={[styles.accountInformation]}>
                     <Text onPress={() => {
-                        dateOfBirthInputRef.current.focus()
-                    }}>Ngày sinh</Text>
+                        addressInputRef.current.focus()
+                    }}>Địa chỉ </Text>
                     <TextInput
-                        ref={dateOfBirthInputRef}
+                        ref={addressInputRef}
                         style={[styles.lineTextInput]}
-                        value={dateOfBirth}
+                        value={address}
                         textAlign={"right"}
-                        onChangeText={handleChangeDateOfBirth}
+                        onChangeText={handleChangeAddress}
                         // onSubmitEditing={handleSubmitEditingUsername}
                         // onBlur={handleOnBlurUsername}
                     ></TextInput>
                 </View>
                 <Text
                     style={[generalStyle.errorText]}
-                >{errorTextDateOfBirth}</Text>
+                >{errorTextAddress}</Text>
             </View>
             <View style={[styles.line]}>
                 <View style={[styles.accountInformation]}>
@@ -197,7 +233,7 @@ export default function UserLogin() {
             </View>
 
             <TouchableOpacity
-                // onPress={handleRegister}
+                onPress={handleUpdateUser}
                 disabled={disabledBtnSaveInformation}
                 style={[disabledBtnSaveInformation && styles.disabledBtnSaveInformation]}
             >

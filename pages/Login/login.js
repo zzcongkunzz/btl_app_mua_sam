@@ -1,35 +1,42 @@
-import {Text, TextInput, TouchableOpacity, View,} from "react-native";
+import {Text, TextInput, TouchableOpacity, View, ToastAndroid} from "react-native";
 import {Feather} from '@expo/vector-icons';
 import styles from "./styleLogin"
 import generalStyle from "../../assets/GeneralStyle/generalStyle"
 import {useRef, useState} from "react";
 import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
-import {useNavigate} from "react-router-native";
+import {useLocation, useNavigate, useSearchParams} from "react-router-native";
 import {useDispatch} from "react-redux";
 import {storeSlice} from "../../stores/StoreReducer";
+import {useLoginMutation} from "../../stores/API/service";
 
 export default function Login() {
     const dispatch = useDispatch();
     const navigate= useNavigate();
+    const [searchParams, setSearchParams] = useSearchParams();
 
-    const [username, setUsername] = useState('');
-    const [password, setPassword] = useState('');
+    // console.log("login/data: ", searchParams.get('phoneNumber'));
+
+    const [phoneNumber, setPhoneNumber] = useState(searchParams.get('phoneNumber') ?? '');
+    const [password, setPassword] = useState(searchParams.get('password') ?? '');
     const [showPassword, setShowPassword] = useState(false);
-    const [errorTextUsername, setErrorTextUsername] = useState('');
+    const [errorTextPhoneNumber, setErrorTextPhoneNumber] = useState('');
     const [errorTextPassword, setErrorTextPassword] = useState('');
     const passwordInputRef = useRef(null);
-    const disabledBtnLogin = errorTextUsername.length > 0 || errorTextPassword.length > 0 || username === '' || password === '';
+    const disabledBtnLogin = errorTextPhoneNumber.length > 0 || errorTextPassword.length > 0 || phoneNumber === '' || password === '';
 
-
+    // API
+    const [login, loginResult] = useLoginMutation();
 
     const handleShowPassword = () => {
         setShowPassword(!showPassword);
     }
 
-    const handleChangeUsername = (value) => {
-        setErrorTextUsername('')
-        value = value.replace(' ', '');
-        setUsername(value);
+    const handleChangePhoneNumber = (value) => {
+        setErrorTextPhoneNumber('')
+        value = value.replace(/\s|[^0-9]/, '');
+        if (value.length <= 10) {
+            setPhoneNumber(value);
+        }
     }
 
     const handleChangePassword = (value) => {
@@ -37,13 +44,14 @@ export default function Login() {
         setPassword(value);
     }
 
-    const handleOnBlurUsername = () => {
-        const regex = new RegExp('^[0-9a-zA-Z!@.?]+$');
+    const handleOnBlurPhoneNumber = () => {
+        const regex = new RegExp('^0[0-9]{9}$');
 
-        if (username === '') {
-            setErrorTextUsername('Vui lòng điền vào mục này.')
-        } else if (!regex.test(username)) {
-            setErrorTextUsername('Tên đăng nhập chỉ được chứa các chữ cái, số, và các kí tự đặc biệt như !@.?')
+        if (phoneNumber === '') {
+            setErrorTextPhoneNumber('Vui lòng điền vào mục này.')
+        } else if (!regex.test(phoneNumber)) {
+            setErrorTextPhoneNumber('Số điện thoại nhập sai định dạng.')
+
         }
 
     }
@@ -58,10 +66,30 @@ export default function Login() {
         passwordInputRef.current.focus();
     }
 
-    const handleLogin = () => {
-        //console.log(username, " ", password);
-        dispatch(storeSlice.actions.setAccessToken("access token"));
-        navigate('/user')
+    const handleLogin = async () => {
+        //console.log(phoneNumber, " ", password);
+        await login({
+            phoneNumber: phoneNumber,
+            password: password,
+        }).unwrap()
+            .then((originalPromiseResult) => {
+                console.log(originalPromiseResult);
+                if(originalPromiseResult.users != null){
+                    dispatch(storeSlice.actions.setUser(originalPromiseResult.users));
+                    dispatch(storeSlice.actions.setAccessToken("access token"));
+
+                    dispatch(storeSlice.actions.nextPage('/user'));
+                    ToastAndroid.show('Đăng nhập thành công!', ToastAndroid.SHORT, ToastAndroid.CENTER,);
+                    navigate('/user')
+                }
+                else {
+                    ToastAndroid.show('Sai số điện thoại hoặc mật khẩu!', ToastAndroid.SHORT, ToastAndroid.CENTER,);
+                }
+
+            })
+            .catch((ex) => {
+                console.log("Exception: ,", ex)
+            })
     }
 
     const handleRegister = () => {
@@ -84,22 +112,22 @@ export default function Login() {
                 <TextInput
                     style={[
                         generalStyle.textInput,
-                        (errorTextUsername.length > 0) && generalStyle.textInputError,
+                        (errorTextPhoneNumber.length > 0) && generalStyle.textInputError,
                     ]}
-                    placeholder="Email/Số điện thoại/Tên đăng nhập"
+                    placeholder="Số điện thoại"
                     textContentType="username"
                     autoComplete="username"
-                    value={username}
+                    value={phoneNumber}
                     returnKeyType="next"
-                    onChangeText={handleChangeUsername}
+                    onChangeText={handleChangePhoneNumber}
                     onFocus={() => {
                     }}
                     onSubmitEditing={handleSubmitEditingUsername}
-                    onBlur={handleOnBlurUsername}
+                    onBlur={handleOnBlurPhoneNumber}
                 ></TextInput>
                 <Text
                     style={[generalStyle.errorText]}
-                >{errorTextUsername}</Text>
+                >{errorTextPhoneNumber}</Text>
             </View>
             <View
                 style={[generalStyle.formItem]}

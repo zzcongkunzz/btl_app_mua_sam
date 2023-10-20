@@ -1,18 +1,24 @@
-import {Text, TextInput, TouchableOpacity, View,} from "react-native";
+import {Text, TextInput, TouchableOpacity, View, ToastAndroid} from "react-native";
 import styles from "./styleRegister"
 import generalStyle from "../../assets/GeneralStyle/generalStyle"
 import {useRef, useState} from "react";
 import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
 import {useNavigate, useNavigation} from 'react-router-native';
+import {storeSlice} from "../../stores/StoreReducer";
+import {useRegisterMutation} from "../../stores/API/service";
+import {useDispatch} from "react-redux";
 
 export default function Register() {
-    const [username, setUsername] = useState('');
+    const dispatch = useDispatch();
+    const navigate = useNavigate();
+
+    const [fullName, setFullName] = useState('');
     const [email, setEmail] = useState('');
     const [phoneNumber, setPhoneNumber] = useState('');
     const [password, setPassword] = useState('');
     const [confirmPassword, setConfirmPassword] = useState('');
 
-    const [errorTextUsername, setErrorTextUsername] = useState('');
+    const [errorTextFullName, setErrorTextFullName] = useState('');
     const [errorTextEmail, setErrorTextEmail] = useState('');
     const [errorTextPhoneNumber, setErrorTextPhoneNumber] = useState('');
     const [errorTextPassword, setErrorTextPassword] = useState('');
@@ -23,24 +29,24 @@ export default function Register() {
     const passwordInputRef = useRef(null);
     const confirmPasswordInputRef = useRef(null);
 
-    const navigate= useNavigate();
+    // API
+    const [register, registerResult] = useRegisterMutation();
 
-    const disabledBtnRegister = errorTextUsername.length > 0 ||
+    const disabledBtnRegister = errorTextFullName.length > 0 ||
         errorTextEmail.length > 0 ||
         errorTextPhoneNumber.length > 0 ||
         errorTextPassword.length > 0 ||
         errorTextConfirmPassword.length > 0 ||
-        username === '' ||
+        fullName === '' ||
         email === '' ||
         phoneNumber === '' ||
         password === '' ||
         confirmPassword === '' ||
         password !== confirmPassword;
 
-    const handleChangeUsername = (value) => {
-        setErrorTextUsername('')
-        value = value.replace(' ', '');
-        setUsername(value);
+    const handleChangeFullName = (value) => {
+        setErrorTextFullName('')
+        setFullName(value);
     }
 
     const handleChangeEmail = (value) => {
@@ -69,13 +75,9 @@ export default function Register() {
         setConfirmPassword(value);
     }
 
-    const handleOnBlurUsername = () => {
-        const regex = new RegExp('^[0-9a-zA-Z!@.?]+$');
-
-        if (username === '') {
-            setErrorTextUsername('Vui lòng điền vào mục này.')
-        } else if (!regex.test(username)) {
-            setErrorTextUsername('Tên đăng nhập chỉ được chứa các chữ cái, số, và các kí tự đặc biệt như !@.?')
+    const handleOnBlurFullName = () => {
+        if (fullName === '') {
+            setErrorTextFullName('Vui lòng điền vào mục này.')
         }
 
     }
@@ -134,18 +136,42 @@ export default function Register() {
         confirmPasswordInputRef.current.focus();
     }
 
-    const handleRegister = () => {
-        console.group('login value');
+    const handleRegister = async () => {
+        // console.group('login value');
+        //
+        // console.log('username', fullName);
+        // console.log('email', email);
+        // console.log('phoneNumber', phoneNumber);
+        // console.log('password', password);
+        //
+        // console.groupEnd();
 
-        console.log('username', username);
-        console.log('email', email);
-        console.log('phoneNumber', phoneNumber);
-        console.log('password', password);
+        await register({
+            fullName,
+            phoneNumber,
+            password,
+            email
+        }).unwrap()
+            .then((originalPromiseResult) => {
+                console.log(originalPromiseResult);
+                if (originalPromiseResult.users != null) {
+                    const user = originalPromiseResult.users
+                    // dispatch(storeSlice.actions.setUser(originalPromiseResult.users));
+                    // dispatch(storeSlice.actions.setAccessToken("access token"));
+                    const url = `/login?phoneNumber=${phoneNumber}&password=${password}`;
+                    ToastAndroid.show('Đăng kí thành công!', ToastAndroid.SHORT, ToastAndroid.CENTER,);
+                    dispatch(storeSlice.actions.nextPage(url));
+                    navigate(url)
+                }
 
-        console.groupEnd();
+            })
+            .catch((ex) => {
+                console.log("Exception: ,", ex)
+            })
     }
 
     const handleLogin = () => {
+        dispatch(storeSlice.actions.nextPage('/login'));
         navigate('/login')
     }
 
@@ -165,20 +191,20 @@ export default function Register() {
                 <TextInput
                     style={[
                         generalStyle.textInput,
-                        (errorTextUsername.length > 0) && generalStyle.textInputError,
+                        (errorTextFullName.length > 0) && generalStyle.textInputError,
                     ]}
-                    placeholder="Tên đăng nhập"
-                    value={username}
+                    placeholder="Họ và tên"
+                    value={fullName}
                     returnKeyType="next"
-                    onChangeText={handleChangeUsername}
+                    onChangeText={handleChangeFullName}
                     onFocus={() => {
                     }}
                     onSubmitEditing={handleSubmitEditingUsername}
-                    onBlur={handleOnBlurUsername}
+                    onBlur={handleOnBlurFullName}
                 ></TextInput>
                 <Text
                     style={[generalStyle.errorText]}
-                >{errorTextUsername}</Text>
+                >{errorTextFullName}</Text>
             </View>
             <View
                 style={[generalStyle.formItem]}
