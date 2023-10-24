@@ -28,6 +28,20 @@ export const storeSlice = createSlice({
                 // console.log(current(state));
             }
         },
+        setCriteria: {
+            reducer: (state, action) => {
+                // console.log("state", state);
+                state.criteria = action.payload;
+                // console.log(current(state));
+            }
+        },
+        setListProduct: {
+            reducer: (state, action) => {
+                // console.log("state", state);
+                state.listProduct = action.payload;
+                // console.log(current(state));
+            }
+        },
         nextPage: {
             reducer: (state, action) => {
                 // console.log("state", state);

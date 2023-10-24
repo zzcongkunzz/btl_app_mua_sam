@@ -46,6 +46,9 @@ const generalStyle = StyleSheet.create({
         opacity: 0.7,
     },
     text: {
+        textAlign: "left",
+        // backgroundColor: "#000",
+        width: "100%",
         fontSize: 14,
         lineHeight: 17,
     },

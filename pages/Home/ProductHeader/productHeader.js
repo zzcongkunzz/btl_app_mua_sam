@@ -3,14 +3,46 @@ import styles from "./styleProductHeader";
 import {useEffect, useState} from "react";
 import {AntDesign, MaterialIcons} from '@expo/vector-icons';
 import DATA_CATEGORY from "../../../constant/dataCategory";
+import {useDispatch, useSelector} from "react-redux";
+import SORT_TYPE from "../../../constant/sortType";
+import {storeSlice} from "../../../stores/StoreReducer";
+import {useFindProductByCriteriaMutation, useGetCategoryMutation} from "../../../stores/API/service";
 
 function ProductHeader() {
+    const dispatch = useDispatch();
+
     const [productHeaderItemFollow, setProductHeaderItemFollow] = useState('Sort By New');
     const [priceIncreasesDecreases, setPriceIncreasesDecreases] = useState(false);
     const [productHeaderCategoryFollow, setProductHeaderCategoryFollow] = useState(false);
     const [categoryExpandMore, setCategoryExpandMore] = useState(false);
     const [categorySelected, setCategorySelected] = useState([]);
+    const [listCategory, setListCategory] = useState([]);
 
+    const listProduct = useSelector((state) => state.storeReducer.listProduct);
+    const criteria = useSelector((state) => state.storeReducer.criteria);
+
+    // API
+    const [findProductByCriteria, findProductByCriteriaResult] = useFindProductByCriteriaMutation();
+    const [getCategory, getCategoryResult] = useGetCategoryMutation();
+
+    useEffect(() => {
+        const getDataCategory = async () => {
+            await getCategory({
+
+            }).unwrap()
+                .then((originalPromiseResult) => {
+                    setListCategory(originalPromiseResult.listCategory);
+                })
+                .catch((ex) => {
+                    console.log("Exception: ,", ex)
+                })
+        }
+        getDataCategory();
+    }, []);
+
+    useEffect(() => {
+        setProductHeaderItemFollow('Sort By New');
+    }, [criteria.nameProductOrCategory]);
 
     useEffect(() => {
         if (productHeaderItemFollow !== 'Sort By Price') {
@@ -18,40 +50,115 @@ function ProductHeader() {
         }
     }, [productHeaderItemFollow])
 
-    const handleOnPressSortByNew = () => {
+    const handleOnPressSortByNew = async () => {
+
+        await findProductByCriteria({
+            ...criteria,
+            sortBy: SORT_TYPE.NEW,
+        }).unwrap()
+            .then((originalPromiseResult) => {
+                dispatch(storeSlice.actions.setListProduct(originalPromiseResult.listProduct));
+                dispatch(storeSlice.actions.setCriteria({
+                    ...criteria,
+                    sortBy: SORT_TYPE.NEW,
+                }));
+
+            })
+            .catch((ex) => {
+                console.log("Exception: ,", ex)
+            })
+
         setProductHeaderItemFollow('Sort By New');
-        if(categoryExpandMore){
+        if (categoryExpandMore) {
             handleOnPressCategory();
         }
 
     }
 
-    const handleOnPressSortByBestseller = () => {
+    const handleOnPressSortByBestseller = async () => {
+
+        await findProductByCriteria({
+            ...criteria,
+            sortBy: SORT_TYPE.HOT_SELLING,
+        }).unwrap()
+            .then((originalPromiseResult) => {
+                dispatch(storeSlice.actions.setListProduct(originalPromiseResult.listProduct));
+                dispatch(storeSlice.actions.setCriteria({
+                    ...criteria,
+                    sortBy: SORT_TYPE.HOT_SELLING,
+                }));
+
+            })
+            .catch((ex) => {
+                console.log("Exception: ,", ex)
+            })
+
         setProductHeaderItemFollow('Sort By Bestseller');
-        if(categoryExpandMore){
+        if (categoryExpandMore) {
             handleOnPressCategory();
         }
 
     }
 
-    const handleOnPressSortByPrice = () => {
+    const handleOnPressSortByPrice = async () => {
+        let sortPrice = SORT_TYPE.PRICE_ASC;
+
         if (productHeaderItemFollow === 'Sort By Price') {
-            setPriceIncreasesDecreases(!priceIncreasesDecreases);
+            const temp = !priceIncreasesDecreases
+            setPriceIncreasesDecreases(temp);
+            sortPrice = temp === false ? SORT_TYPE.PRICE_ASC : SORT_TYPE.PRICE_DESC;
         }
+
+        await findProductByCriteria({
+            ...criteria,
+            sortBy: sortPrice,
+        }).unwrap()
+            .then((originalPromiseResult) => {
+                dispatch(storeSlice.actions.setListProduct(originalPromiseResult.listProduct));
+                dispatch(storeSlice.actions.setCriteria({
+                    ...criteria,
+                    sortBy: sortPrice,
+                }));
+
+            })
+            .catch((ex) => {
+                console.log("Exception: ,", ex)
+            })
+
         setProductHeaderItemFollow('Sort By Price');
-        if(categoryExpandMore){
+        if (categoryExpandMore) {
             handleOnPressCategory();
         }
     }
 
-    const handleOnPressCategory = () => {
-        if(categoryExpandMore === false){
+    const handleOnPressCategory = async () => {
+        if (categoryExpandMore === false) {
             setProductHeaderCategoryFollow(true);
-        }
-        else if(categorySelected.length === 0){
+        } else if (categorySelected.length === 0) {
             setProductHeaderCategoryFollow(false);
         }
-        setCategoryExpandMore(!categoryExpandMore);
+        const temp = !categoryExpandMore
+
+        //khi đóng category
+        if (temp === false) {
+            await findProductByCriteria({
+                ...criteria,
+                category: (categorySelected.length > 0) ? categorySelected : null,
+            }).unwrap()
+                .then((originalPromiseResult) => {
+                    dispatch(storeSlice.actions.setListProduct(originalPromiseResult.listProduct));
+                    dispatch(storeSlice.actions.setCriteria({
+                        ...criteria,
+                        category: categorySelected,
+                    }));
+
+                })
+                .catch((ex) => {
+                    console.log("Exception: ,", ex)
+                })
+        }
+
+        setCategoryExpandMore(temp);
     }
 
     const handleOnPressCategoryItem = (item) => {
@@ -154,7 +261,7 @@ function ProductHeader() {
                                 <ScrollView
                                     contentContainerStyle={[styles.listCategoryScrollView]}
                                 >
-                                    {DATA_CATEGORY?.map((item) => {
+                                    {listCategory?.map((item) => {
                                         return (
                                             <TouchableOpacity
                                                 key={`category item ${item.id}`}

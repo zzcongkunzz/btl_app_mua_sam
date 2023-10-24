@@ -6,14 +6,26 @@ import {useDispatch} from "react-redux";
 import {storeSlice} from "../../../stores/StoreReducer";
 
 
-export default function Product() {
+export default function Product({value}) {
     const dispatch = useDispatch();
 
     const navigate = useNavigate();
+    const productName = value.name.length > 25 ? (value.name.substring(0, 22) + '...') : value.name;
+    const price = (((100-value.discount)/100) * value.price).toLocaleString('vi-VN');
+    // const price = (value.price).toLocaleString('vi-VN');
+
+    let soldQuantity = value.soldQuantity;
+
+    if(soldQuantity > 1000000){
+        soldQuantity = (value.soldQuantity/1000000.0).toFixed(1) + "tr";
+    }
+    else if(soldQuantity > 1000){
+        soldQuantity = (value.soldQuantity/1000.0).toFixed(1) + "k";
+    }
 
     const handleOnPressProduct = () => {
-        dispatch(storeSlice.actions.nextPage(`/productDetails/${111}`));
-        navigate(`/productDetails/${111}`);
+        dispatch(storeSlice.actions.nextPage(`/productDetails/${value.id}`));
+        navigate(`/productDetails/${value.id}`);
     }
 
     return (
@@ -25,39 +37,43 @@ export default function Product() {
             >
                 <ImageBackground
                     style={[styles.productImage]}
-                    source={require("../../../assets/img/sanpham1.jpg")}
+                    source={{uri: value?.linkImage}}
                     resizeMode="cover"
                 >
-                    <View>
-                        <View
-                            style={[styles.productFavouriteBefore]}
-                        ></View>
-                        <View
-                            style={[styles.productFavourite]}
+                    {value?.favorite &&
+                        <View>
+                            <View
+                                style={[styles.productFavouriteBefore]}
+                            ></View>
+                            <View
+                                style={[styles.productFavourite]}
 
+                            >
+                                <Text
+                                    style={[styles.productFavouriteText]}
+                                >
+                                    Yêu Thích
+                                </Text>
+                            </View>
+                        </View>
+                    }
+                    {(value?.discount > 0) &&
+                        <View
+                            style={[styles.productSaleOff]}
                         >
                             <Text
-                                style={[styles.productFavouriteText]}
-                            >
-                                Yêu Thích
-                            </Text>
-                        </View>
-                    </View>
-                    <View
-                        style={[styles.productSaleOff]}
-                    >
-                        <Text
-                            style={[styles.productSaleOffText]}
+                                style={[styles.productSaleOffText]}
 
-                        >-99%</Text>
-                    </View>
+                            >{`-${value?.discount}%`}</Text>
+                        </View>
+                    }
                 </ImageBackground>
 
                 <View
                     style={[styles.productContent]}
                 >
                     <Text style={[generalStyle.text]}>
-                        áo khoác nữ sinh Harajuku JK 100% ảnh thật áo khoác nữ sinh Harajuku
+                        {productName}
                     </Text>
                     <View
                         style={[styles.productSell]}
@@ -70,11 +86,11 @@ export default function Product() {
                             >đ</Text>
                             <Text
                                 style={[styles.productPrice]}
-                            >200.000</Text>
+                            >{price}</Text>
                         </View>
                         <Text
                             style={[styles.productQuantitySold]}
-                        >Đã bán 8k</Text>
+                        >Đã bán {soldQuantity}</Text>
                     </View>
                 </View>
             </View>

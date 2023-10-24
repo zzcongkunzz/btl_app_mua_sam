@@ -5,7 +5,7 @@ const styles = StyleSheet.create({
     container: {
         // flexDirection: "column",
         alignItems: 'center',
-        width: "49%",
+        width: "48.5%",
         backgroundColor: "#fff",
         borderRadius: 3,
         marginTop: 10,
@@ -19,6 +19,7 @@ const styles = StyleSheet.create({
         borderTopLeftRadius: 5,
     },
     productContent: {
+        width: "100%",
         marginTop: 10,
         padding: 5,
         paddingBottom: 10,

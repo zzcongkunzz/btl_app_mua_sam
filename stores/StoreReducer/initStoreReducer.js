@@ -4,6 +4,12 @@ export const initStoreReducer = {
     user: {
 
     },
+    criteria:{
+        nameProductOrCategory: null,
+        category: [],
+        sortBy: null,
+    },
+    listProduct: [],
     pageIndex: 'Home',
     pageHistory: ['/'],
 };

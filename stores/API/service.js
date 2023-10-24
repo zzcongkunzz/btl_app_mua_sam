@@ -3,7 +3,7 @@ import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 
 const baseQuery = fetchBaseQuery({ baseUrl: "" });
 
-const localhost = "192.168.1.19";
+const localhost = "192.168.1.9";
 const baseQueryWithReauth = async (args, api, extraOptions) => {
     let result = await baseQuery(args, api, extraOptions);
     // console.log("custom", result);
@@ -73,6 +73,47 @@ export const fakeShopeeAPI = createApi({
                 };
             },
         }),
+        findProductByCriteria: build.mutation({
+            query: ({ nameProductOrCategory, category, sortBy}) => {
+                return {
+                    url: `http://${localhost}:8099/adm/api/product/findByCriteria`,
+                    method: "POST",
+                    headers: {
+                        accept: "application/json",
+                        "Content-Type": "application/json",
+                    },
+                    body: {
+                        nameProductOrCategory,
+                        category,
+                        sortBy,
+                    },
+                };
+            },
+        }),
+        findProductById: build.mutation({
+            query: ({ id}) => {
+                return {
+                    url: `http://${localhost}:8099/adm/api/product/${id}`,
+                    method: "GET",
+                    headers: {
+                        accept: "application/json",
+                        "Content-Type": "application/json",
+                    },
+                };
+            },
+        }),
+        getCategory: build.mutation({
+            query: () => {
+                return {
+                    url: `http://${localhost}:8099/adm/api/category`,
+                    method: "GET",
+                    headers: {
+                        accept: "application/json",
+                        "Content-Type": "application/json",
+                    },
+                };
+            },
+        }),
     }),
 });
 
@@ -80,4 +121,7 @@ export const {
     useLoginMutation,
     useRegisterMutation,
     useUpdateUserMutation,
+    useFindProductByCriteriaMutation,
+    useFindProductByIdMutation,
+    useGetCategoryMutation,
 } = fakeShopeeAPI;

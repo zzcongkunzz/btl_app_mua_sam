@@ -1,14 +1,63 @@
 import {ImageBackground, ScrollView, Text, TextInput, TouchableOpacity, View} from "react-native";
 import styles from "./styleProductDetails";
 import {AntDesign, Entypo, Feather, FontAwesome, FontAwesome5} from "@expo/vector-icons";
-import {useState} from "react";
+import {useEffect, useState} from "react";
 import appColor from "../../constant/appColor";
+import {useFindProductByIdMutation} from "../../stores/API/service";
+import {useParams} from "react-router-native";
+import SORT_TYPE from "../../constant/sortType";
+import {storeSlice} from "../../stores/StoreReducer";
 
 export default function ProductDetails() {
-    const [quantityPurchased, setQuantityPurchased] = useState("1")
+    const data = useParams();
 
-    const quantityStar = 2.5;
+    const [quantityPurchased, setQuantityPurchased] = useState("1")
+    const [productValue, setProductValue] = useState(null);
     const listStar = [1, 2, 3, 4, 5];
+
+    const priceOld = productValue?.price != null ? (productValue?.price).toLocaleString('vi-VN') : null;
+    const price = productValue?.price != null ? (((100-productValue?.discount)/100) * productValue.price).toLocaleString('vi-VN') : null;
+
+    let soldQuantity = productValue?.soldQuantity;
+    if(soldQuantity >= 1000000){
+        soldQuantity = (productValue?.soldQuantity/1000000.0).toFixed(1) + "tr";
+    }
+    else if(soldQuantity >= 1000){
+        soldQuantity = (productValue?.soldQuantity/1000.0).toFixed(1) + "k";
+    }
+
+    let warehouseQuantity = productValue?.warehouseQuantity;
+    console.log(warehouseQuantity);
+    if(warehouseQuantity >= 1000000000){
+        warehouseQuantity = (productValue?.warehouseQuantity/1000000000.0).toFixed(1) + "t";
+    }
+    else if(warehouseQuantity >= 1000000){
+        warehouseQuantity = (productValue?.warehouseQuantity/1000000.0).toFixed(1) + "tr";
+    }
+    else if(warehouseQuantity >= 1000){
+        warehouseQuantity = (productValue?.warehouseQuantity/1000.0).toFixed(1) + "k";
+    }
+
+    // API
+    const [findProductById, findProductByIdResult] = useFindProductByIdMutation();
+
+
+    useEffect(() => {
+
+        const getData = async () => {
+            await findProductById({
+                id: data?.id,
+            }).unwrap()
+                .then((originalPromiseResult) => {
+                    setProductValue(originalPromiseResult);
+                })
+                .catch((ex) => {
+                    console.log("Exception: ,", ex)
+                })
+        }
+        getData();
+
+    }, []);
 
     const handleOnChangeQuantityPurchased = (value) => {
         value = value.replace(/\s|[^0-9]/, '');
@@ -34,7 +83,7 @@ export default function ProductDetails() {
         }
     }
 
-    const handleOnPressAddToCart = () => {
+    const handleOnPressAddToCart = async () => {
 
     }
 
@@ -49,7 +98,7 @@ export default function ProductDetails() {
             <ScrollView>
                 <ImageBackground
                     style={[styles.productDetailsImage]}
-                    source={require("../../assets/img/sanpham1.jpg")}
+                    source={{uri: productValue?.linkImage}}
                     resizeMode="stretch"
                 >
                 </ImageBackground>
@@ -58,7 +107,7 @@ export default function ProductDetails() {
                 >
                     <View>
                         <Text style={[styles.productDetailsName]}>
-                            áo khoác nữ sinh Harajuku JK 100% ảnh thật áo khoác nữ sinh Harajuku
+                            {productValue?.name}
                         </Text>
                     </View>
                     <View style={[styles.starAndSold]}>
@@ -66,13 +115,13 @@ export default function ProductDetails() {
                             <View style={[styles.listStar]}>
                                 {
                                     listStar.map((value) => {
-                                        if (value <= quantityStar) {
+                                        if (value <= productValue?.rating) {
                                             return (
                                                 <View key={`star ${value}`} style={[styles.starIcon]}>
                                                     <FontAwesome name="star" size={24} color="#ffb440"/>
                                                 </View>
                                             );
-                                        } else if ((value - 0.5) <= quantityStar) {
+                                        } else if ((value - 0.5) <= productValue?.rating) {
                                             return (
                                                 <View key={`star ${value}`} style={[styles.starIcon]}>
                                                     <FontAwesome name="star-half-o" size={24} color="#ffb440"/>
@@ -89,27 +138,27 @@ export default function ProductDetails() {
                                 }
                             </View>
                             <View style={[styles.splittingLine,]}></View>
-                            <Text style={[styles.quantityStar]}>{quantityStar}</Text>
+                            <Text style={[styles.quantityStar]}>{productValue?.rating}</Text>
                         </View>
                         <View style={[styles.quantitySold]}>
-                            <Text>Đã Bán 1,7k</Text>
+                            <Text>Đã Bán {soldQuantity}</Text>
                         </View>
                     </View>
                     <View style={[styles.productDetailsPrice]}>
                         <View style={[styles.productPriceBox, styles.productPriceBoxOld]}>
                             <Text style={[styles.productCurrencyUnit, styles.productCurrencyUnitOld]}>đ</Text>
-                            <Text style={[styles.productPrice, styles.productPriceOld]}>400.000</Text>
+                            <Text style={[styles.productPrice, styles.productPriceOld]}>{priceOld}</Text>
                         </View>
 
                         <View style={[styles.productPriceBox]}>
                             <Text style={[styles.productCurrencyUnit]}>đ</Text>
-                            <Text style={[styles.productPrice]}>200.000</Text>
+                            <Text style={[styles.productPrice]}>{price}</Text>
                         </View>
 
                         <View
                             style={[styles.productSaleOff]}
                         >
-                            <Text style={[styles.productSaleOffText]}>-50%</Text>
+                            <Text style={[styles.productSaleOffText]}>{`-${productValue?.discount}%`}</Text>
                         </View>
                     </View>
                     <View style={[styles.quantityPurchasedAndSold]}>
@@ -135,7 +184,7 @@ export default function ProductDetails() {
                             </TouchableOpacity>
                         </View>
                         <View style={[styles.quantitySoldBox]}>
-                            <Text style={[]}>Sản phẩm có sẵn: 999</Text>
+                            <Text style={[]}>Sản phẩm có sẵn: {warehouseQuantity}</Text>
                         </View>
                     </View>
                     <View style={[styles.purchaseBox]}>

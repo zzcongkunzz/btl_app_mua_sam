@@ -1,22 +1,29 @@
 import {FlatList, ScrollView, Text, TextInput, TouchableOpacity, View} from "react-native";
 import styles from "./styleHeader";
-import {useState} from "react";
+import {useRef, useState} from "react";
 import {Ionicons, Feather, AntDesign} from '@expo/vector-icons';
-import {useNavigate, useLocation} from "react-router-native";
+import {useNavigate, useLocation, useSearchParams} from "react-router-native";
 import {useDispatch, useSelector} from "react-redux";
 import {storeSlice} from "../../stores/StoreReducer";
+import {useFindProductByCriteriaMutation} from "../../stores/API/service";
+import SORT_TYPE from "../../constant/sortType";
 
 function Header() {
     const dispatch = useDispatch();
-    const [nameProduct, setNameProduct] = useState('');
+    const [searchParams, setSearchParams] = useSearchParams();
+
+    const [nameProductOrCategory, setNameProductOrCategory] = useState(searchParams.get('nameProductOrCategory') ?? '');
     const [onFocusSearchInput, setOnFocusSearchInput] = useState(false);
 
-    const navigate= useNavigate();
+    const navigate = useNavigate();
     const location = useLocation();
     const pageHistory = useSelector((state) => state.storeReducer.pageHistory);
+    const searchInputRef = useRef(null);
 
     const enablePageBackButton = !(['/',].indexOf(location.pathname) > -1);
 
+    // API
+    const [findProductByCriteria, findProductByCriteriaResult] = useFindProductByCriteriaMutation();
 
     const handleFocusSearchInput = () => {
         setOnFocusSearchInput(true);
@@ -32,12 +39,44 @@ function Header() {
     }
 
     const handleOnPressBackButton = () => {
-        if(pageHistory.length >= 2){
+        if (pageHistory.length >= 2) {
             const path = pageHistory[pageHistory.length - 2]
             navigate(path);
             dispatch(storeSlice.actions.backPage());
         }
-        // navigate('/');
+    }
+
+    const handleOnPressSearchIcon = async () => {
+
+        await findProductByCriteria({
+            nameProductOrCategory: nameProductOrCategory != "" ? nameProductOrCategory : null,
+            category: [],
+            sortBy: SORT_TYPE.NEW,
+        }).unwrap()
+            .then((originalPromiseResult) => {
+                dispatch(storeSlice.actions.setListProduct(originalPromiseResult.listProduct));
+                dispatch(storeSlice.actions.setCriteria({
+                    nameProductOrCategory: nameProductOrCategory,
+                    category: [],
+                    sortBy: SORT_TYPE.NEW,
+                }));
+
+            })
+            .catch((ex) => {
+                console.log("Exception: ,", ex)
+            })
+
+        searchInputRef.current.blur();
+
+        if(enablePageBackButton){
+            dispatch(storeSlice.actions.nextPage(`/?nameProductOrCategory=${nameProductOrCategory}`));
+            navigate(`/?nameProductOrCategory=${nameProductOrCategory}`);
+        }
+
+    }
+
+    const handleOnSubmitSearchInput = async () => {
+        handleOnPressSearchIcon();
     }
 
     return (
@@ -54,7 +93,7 @@ function Header() {
                         ]}
                         onPress={handleOnPressBackButton}
                     >
-                        <AntDesign name="arrowleft" size={30} color="white" />
+                        <AntDesign name="arrowleft" size={30} color="white"/>
                     </TouchableOpacity>
                 }
                 <View
@@ -64,12 +103,14 @@ function Header() {
                         style={[
                             styles.textInputSearch
                         ]}
-                        value={nameProduct}
-                        onChangeText={setNameProduct}
+                        ref={searchInputRef}
+                        value={nameProductOrCategory}
+                        onChangeText={setNameProductOrCategory}
                         placeholder="Tìm kiếm sản phẩm"
                         placeholderTextColor="#f54c2c"
                         onFocus={handleFocusSearchInput}
                         onBlur={handleOnBlurSearchInput}
+                        onSubmitEditing={handleOnSubmitSearchInput}
                     ></TextInput>
                     <TouchableOpacity
                         style={[
@@ -77,6 +118,7 @@ function Header() {
                             onFocusSearchInput && styles.iconSearchEnabled,
                         ]}
                         disabled={!onFocusSearchInput}
+                        onPress={handleOnPressSearchIcon}
                     >
                         <Ionicons name="search-outline"
                                   size={24}
