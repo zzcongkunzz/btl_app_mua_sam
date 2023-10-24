@@ -1,29 +1,59 @@
 import {FlatList, ScrollView, Text, TextInput, TouchableOpacity, View} from "react-native";
 import styles from "./styleHeader";
-import {useRef, useState} from "react";
+import {useEffect, useRef, useState} from "react";
 import {Ionicons, Feather, AntDesign} from '@expo/vector-icons';
 import {useNavigate, useLocation, useSearchParams} from "react-router-native";
 import {useDispatch, useSelector} from "react-redux";
 import {storeSlice} from "../../stores/StoreReducer";
-import {useFindProductByCriteriaMutation} from "../../stores/API/service";
+import {useFindProductByCriteriaMutation, useGetCartByUserMutation} from "../../stores/API/service";
 import SORT_TYPE from "../../constant/sortType";
 
 function Header() {
     const dispatch = useDispatch();
     const [searchParams, setSearchParams] = useSearchParams();
-
-    const [nameProductOrCategory, setNameProductOrCategory] = useState(searchParams.get('nameProductOrCategory') ?? '');
-    const [onFocusSearchInput, setOnFocusSearchInput] = useState(false);
-
     const navigate = useNavigate();
     const location = useLocation();
     const pageHistory = useSelector((state) => state.storeReducer.pageHistory);
+    const user = useSelector((state) => state.storeReducer.user);
+    const listCart = useSelector((state) => state.storeReducer.listCart);
+    const cartNotication = useSelector((state) => state.storeReducer.cartNotication);
+
+    const [nameProductOrCategory, setNameProductOrCategory] = useState(searchParams.get('nameProductOrCategory') ?? '');
+    const [onFocusSearchInput, setOnFocusSearchInput] = useState(false);
     const searchInputRef = useRef(null);
 
     const enablePageBackButton = !(['/',].indexOf(location.pathname) > -1);
 
     // API
     const [findProductByCriteria, findProductByCriteriaResult] = useFindProductByCriteriaMutation();
+    const [getCartByUser, getCartByUserResult] = useGetCartByUserMutation();
+
+    useEffect(() => {
+        const getData = async () => {
+            await getCartByUser({
+                user,
+            }).unwrap()
+                .then((originalPromiseResult) => {
+                    const coutcartNotication = originalPromiseResult.listCart.reduce((total, cart) => {
+                        return total + cart.quantity;
+                    }, 0)
+                    dispatch(storeSlice.actions.setCartNotication(coutcartNotication));
+                })
+                .catch((ex) => {
+                    console.log("Exception: ,", ex)
+                })
+        }
+        if(user != null){
+            getData();
+        }
+        else {
+            dispatch(storeSlice.actions.setCartNotication(0));
+        }
+    }, []);
+
+    useEffect(() => {
+        setNameProductOrCategory(searchParams.get('nameProductOrCategory'));
+    }, [pageHistory]);
 
     const handleFocusSearchInput = () => {
         setOnFocusSearchInput(true);
@@ -34,8 +64,16 @@ function Header() {
     }
 
     const handleOnPressCart = () => {
-        dispatch(storeSlice.actions.nextPage(`/cart`));
-        navigate('/cart');
+        if(user != null){
+            dispatch(storeSlice.actions.nextPage(`/cart`));
+            navigate('/cart');
+        }
+        else {
+            dispatch(storeSlice.actions.nextPage(`/login`));
+            navigate(`/login`)
+        }
+
+
     }
 
     const handleOnPressBackButton = () => {
@@ -145,7 +183,7 @@ function Header() {
                             style={[
                                 styles.cartNotificationText,
                             ]}
-                        >13</Text>
+                        >{cartNotication}</Text>
                     </View>
                 </TouchableOpacity>
             </View>

@@ -6,11 +6,13 @@ import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
 import {useNavigate, useNavigation} from 'react-router-native';
 import {storeSlice} from "../../stores/StoreReducer";
 import {useRegisterMutation} from "../../stores/API/service";
-import {useDispatch} from "react-redux";
+import {useDispatch, useSelector} from "react-redux";
+import {AntDesign} from "@expo/vector-icons";
 
 export default function Register() {
     const dispatch = useDispatch();
     const navigate = useNavigate();
+    const pageHistory = useSelector((state) => state.storeReducer.pageHistory);
 
     const [fullName, setFullName] = useState('');
     const [email, setEmail] = useState('');
@@ -158,10 +160,19 @@ export default function Register() {
                     const user = originalPromiseResult.users
                     // dispatch(storeSlice.actions.setUser(originalPromiseResult.users));
                     // dispatch(storeSlice.actions.setAccessToken("access token"));
-                    const url = `/login?phoneNumber=${phoneNumber}&password=${password}`;
                     ToastAndroid.show('Đăng kí thành công!', ToastAndroid.SHORT, ToastAndroid.CENTER,);
-                    dispatch(storeSlice.actions.nextPage(url));
-                    navigate(url)
+
+                    let path = pageHistory[pageHistory.length - 2]
+                    if(path === "/login"){
+                        path = `${path}?phoneNumber=${phoneNumber}&password=${password}`;
+                        navigate(path);
+                        dispatch(storeSlice.actions.backPage());
+                    }
+                    else {
+                        navigate(`/login?phoneNumber=${phoneNumber}&password=${password}`);
+                        // dispatch(storeSlice.actions.nextPage(`/login?phoneNumber=${phoneNumber}&password=${password}`));
+                    }
+
                 }
 
             })
@@ -175,11 +186,27 @@ export default function Register() {
         navigate('/login')
     }
 
+    const handleOnPressBackButton = () => {
+        if (pageHistory.length >= 2) {
+            const path = pageHistory[pageHistory.length - 2]
+            navigate(path);
+            dispatch(storeSlice.actions.backPage());
+        }
+    }
+
     return (
         <KeyboardAwareScrollView
             contentContainerStyle={[styles.container]}
             keyboardShouldPersistTaps='handled'
         >
+            <TouchableOpacity
+                style={[
+                    styles.btnComeBack,
+                ]}
+                onPress={handleOnPressBackButton}
+            >
+                <AntDesign name="arrowleft" size={30} color="red"/>
+            </TouchableOpacity>
             <Text
                 style={[generalStyle.formItem, generalStyle.formTitle]}
             >

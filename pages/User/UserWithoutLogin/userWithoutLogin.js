@@ -1,19 +1,22 @@
 import styles from "./styleUserWithoutLogin"
 import {Text, TouchableOpacity, View} from "react-native";
-import {useSelector} from "react-redux";
+import {useDispatch, useSelector} from "react-redux";
 import UserLogin from "../UserLogin/userLogin";
 import {useNavigate} from "react-router-native";
+import {storeSlice} from "../../../stores/StoreReducer";
 
 
 export default function UserWithoutLogin() {
-
+    const dispatch = useDispatch();
     const navigate = useNavigate();
 
     const handleOnPressLogin = () => {
+        dispatch(storeSlice.actions.nextPage(`/login`));
         navigate('/login');
     }
 
     const handleOnPressRegister = () => {
+        dispatch(storeSlice.actions.nextPage(`/register`));
         navigate('/register');
 
     }

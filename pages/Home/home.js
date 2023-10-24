@@ -15,8 +15,7 @@ function Home() {
 
     const listProduct = useSelector((state) => state.storeReducer.listProduct);
     const criteria = useSelector((state) => state.storeReducer.criteria);
-    const [dateCategory, setDataCategory] = useState([]);
-
+    const pageHistory = useSelector((state) => state.storeReducer.pageHistory);
     // API
     const [findProductByCriteria, findProductByCriteriaResult] = useFindProductByCriteriaMutation();
 
@@ -41,7 +40,7 @@ function Home() {
                 })
         }
         getData();
-    }, []);
+    }, [pageHistory]);
 
     return (
         <View

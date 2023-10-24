@@ -42,6 +42,20 @@ export const storeSlice = createSlice({
                 // console.log(current(state));
             }
         },
+        setListCart: {
+            reducer: (state, action) => {
+                // console.log("state", state);
+                state.listCart = action.payload;
+                // console.log(current(state));
+            }
+        },
+        setCartNotication: {
+            reducer: (state, action) => {
+                // console.log("state", state);
+                state.cartNotication = action.payload;
+                // console.log(current(state));
+            }
+        },
         nextPage: {
             reducer: (state, action) => {
                 // console.log("state", state);

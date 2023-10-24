@@ -1,11 +1,11 @@
 import {Text, TextInput, TouchableOpacity, View, ToastAndroid} from "react-native";
-import {Feather} from '@expo/vector-icons';
+import {AntDesign, Feather} from '@expo/vector-icons';
 import styles from "./styleLogin"
 import generalStyle from "../../assets/GeneralStyle/generalStyle"
 import {useRef, useState} from "react";
 import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
 import {useLocation, useNavigate, useSearchParams} from "react-router-native";
-import {useDispatch} from "react-redux";
+import {useDispatch, useSelector} from "react-redux";
 import {storeSlice} from "../../stores/StoreReducer";
 import {useLoginMutation} from "../../stores/API/service";
 
@@ -13,6 +13,7 @@ export default function Login() {
     const dispatch = useDispatch();
     const navigate= useNavigate();
     const [searchParams, setSearchParams] = useSearchParams();
+    const pageHistory = useSelector((state) => state.storeReducer.pageHistory);
 
     // console.log("login/data: ", searchParams.get('phoneNumber'));
 
@@ -23,6 +24,7 @@ export default function Login() {
     const [errorTextPassword, setErrorTextPassword] = useState('');
     const passwordInputRef = useRef(null);
     const disabledBtnLogin = errorTextPhoneNumber.length > 0 || errorTextPassword.length > 0 || phoneNumber === '' || password === '';
+
 
     // API
     const [login, loginResult] = useLoginMutation();
@@ -77,10 +79,9 @@ export default function Login() {
                 if(originalPromiseResult.users != null){
                     dispatch(storeSlice.actions.setUser(originalPromiseResult.users));
                     dispatch(storeSlice.actions.setAccessToken("access token"));
-
-                    dispatch(storeSlice.actions.nextPage('/user'));
                     ToastAndroid.show('Đăng nhập thành công!', ToastAndroid.SHORT, ToastAndroid.CENTER,);
-                    navigate('/user')
+
+                    handleOnPressBackButton();
                 }
                 else {
                     ToastAndroid.show('Sai số điện thoại hoặc mật khẩu!', ToastAndroid.SHORT, ToastAndroid.CENTER,);
@@ -93,7 +94,16 @@ export default function Login() {
     }
 
     const handleRegister = () => {
-        navigate('/register')
+        dispatch(storeSlice.actions.nextPage(`/register`));
+        navigate('/register');
+    }
+
+    const handleOnPressBackButton = () => {
+        if (pageHistory.length >= 2) {
+            const path = pageHistory[pageHistory.length - 2]
+            navigate(path);
+            dispatch(storeSlice.actions.backPage());
+        }
     }
 
     return (
@@ -101,6 +111,14 @@ export default function Login() {
             contentContainerStyle={[styles.container]}
             keyboardShouldPersistTaps='handled'
         >
+            <TouchableOpacity
+                style={[
+                    styles.btnComeBack,
+                ]}
+                onPress={handleOnPressBackButton}
+            >
+                <AntDesign name="arrowleft" size={30} color="red"/>
+            </TouchableOpacity>
             <Text
                 style={[generalStyle.formItem, generalStyle.formTitle]}
             >

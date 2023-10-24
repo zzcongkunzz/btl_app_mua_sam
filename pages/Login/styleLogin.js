@@ -32,7 +32,18 @@ const styles = StyleSheet.create({
         justifyContent: "space-between",
         marginTop: 10,
         height: 50,
-    }
+    },
+    btnComeBack: {
+        // borderWidth: 1,
+        // borderColor: "white",
+        // backgroundColor: "#000",
+        position: "absolute",
+        top: 30,
+        left: 10,
+        padding: 10,
+        paddingHorizontal: 10,
+        paddingVertical: 5,
+    },
 });
 
 export default styles;

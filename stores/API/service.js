@@ -114,6 +114,65 @@ export const fakeShopeeAPI = createApi({
                 };
             },
         }),
+        addCart: build.mutation({
+            query: ({user, product, quantity}) => {
+                return {
+                    url: `http://${localhost}:8099/adm/api/cart`,
+                    method: "POST",
+                    headers: {
+                        accept: "application/json",
+                        "Content-Type": "application/json",
+                    },
+                    body: {
+                        user,
+                        product,
+                        quantity,
+                    },
+                };
+            },
+        }),
+        getCartByUser: build.mutation({
+            query: ({user}) => {
+                return {
+                    url: `http://${localhost}:8099/adm/api/cart/getCart`,
+                    method: "POST",
+                    headers: {
+                        accept: "application/json",
+                        "Content-Type": "application/json",
+                    },
+                    body: {
+                        user,
+                    },
+                };
+            },
+        }),
+        updateCart: build.mutation({
+            query: ({cart}) => {
+                return {
+                    url: `http://${localhost}:8099/adm/api/cart`,
+                    method: "PUT",
+                    headers: {
+                        accept: "application/json",
+                        "Content-Type": "application/json",
+                    },
+                    body: {
+                        cart
+                    },
+                };
+            },
+        }),
+        deleteCart: build.mutation({
+            query: ({id}) => {
+                return {
+                    url: `http://${localhost}:8099/adm/api/cart/${id}`,
+                    method: "DELETE",
+                    headers: {
+                        accept: "application/json",
+                        "Content-Type": "application/json",
+                    },
+                };
+            },
+        }),
     }),
 });
 
@@ -124,4 +183,9 @@ export const {
     useFindProductByCriteriaMutation,
     useFindProductByIdMutation,
     useGetCategoryMutation,
+    useAddCartMutation,
+    useGetCartByUserMutation,
+    useUpdateCartMutation,
+    useDeleteCartMutation,
+
 } = fakeShopeeAPI;

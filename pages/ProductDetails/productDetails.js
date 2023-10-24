@@ -1,20 +1,31 @@
-import {ImageBackground, ScrollView, Text, TextInput, TouchableOpacity, View} from "react-native";
+import {ImageBackground, ScrollView, Text, TextInput, ToastAndroid, TouchableOpacity, View} from "react-native";
 import styles from "./styleProductDetails";
 import {AntDesign, Entypo, Feather, FontAwesome, FontAwesome5} from "@expo/vector-icons";
 import {useEffect, useState} from "react";
 import appColor from "../../constant/appColor";
-import {useFindProductByIdMutation} from "../../stores/API/service";
-import {useParams} from "react-router-native";
+import {useAddCartMutation, useFindProductByIdMutation} from "../../stores/API/service";
+import {useNavigate, useParams} from "react-router-native";
 import SORT_TYPE from "../../constant/sortType";
 import {storeSlice} from "../../stores/StoreReducer";
+import {useDispatch, useSelector} from "react-redux";
 
 export default function ProductDetails() {
+    const dispatch = useDispatch();
+    const navigate= useNavigate();
     const data = useParams();
 
     const [quantityPurchased, setQuantityPurchased] = useState("1")
     const [productValue, setProductValue] = useState(null);
     const listStar = [1, 2, 3, 4, 5];
+    const user = useSelector((state) => state.storeReducer.user);
+    const cartNotication = useSelector((state) => state.storeReducer.cartNotication);
 
+
+    // API
+    const [findProductById, findProductByIdResult] = useFindProductByIdMutation();
+    const [addCart, addCartResult] = useAddCartMutation();
+
+    //format lại giá
     const priceOld = productValue?.price != null ? (productValue?.price).toLocaleString('vi-VN') : null;
     const price = productValue?.price != null ? (((100-productValue?.discount)/100) * productValue.price).toLocaleString('vi-VN') : null;
 
@@ -27,7 +38,6 @@ export default function ProductDetails() {
     }
 
     let warehouseQuantity = productValue?.warehouseQuantity;
-    console.log(warehouseQuantity);
     if(warehouseQuantity >= 1000000000){
         warehouseQuantity = (productValue?.warehouseQuantity/1000000000.0).toFixed(1) + "t";
     }
@@ -37,10 +47,7 @@ export default function ProductDetails() {
     else if(warehouseQuantity >= 1000){
         warehouseQuantity = (productValue?.warehouseQuantity/1000.0).toFixed(1) + "k";
     }
-
-    // API
-    const [findProductById, findProductByIdResult] = useFindProductByIdMutation();
-
+    // kết thúc format giá
 
     useEffect(() => {
 
@@ -84,7 +91,28 @@ export default function ProductDetails() {
     }
 
     const handleOnPressAddToCart = async () => {
+        console.log("user", user);
 
+        if(user != null){
+            await addCart({
+                user,
+                product: productValue,
+                quantity: quantityPurchased,
+            }).unwrap()
+                .then((originalPromiseResult) => {
+                    if(originalPromiseResult?.cart != null){
+                        ToastAndroid.show('Thêm vào giỏ hàng thành công!', ToastAndroid.SHORT, ToastAndroid.CENTER,);
+                        dispatch(storeSlice.actions.setCartNotication(cartNotication + Number(quantityPurchased)));
+                    }
+                })
+                .catch((ex) => {
+                    console.log("Exception: ,", ex)
+                })
+        }
+        else {
+            dispatch(storeSlice.actions.nextPage(`/login`));
+            navigate(`/login`)
+        }
     }
 
     const handleOnPressBuyNow = () => {

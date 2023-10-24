@@ -1,20 +1,46 @@
 import {Text, TouchableOpacity, View} from "react-native";
 import styles from "./styleFooter";
 import {AntDesign, Foundation, Ionicons, MaterialCommunityIcons, SimpleLineIcons} from "@expo/vector-icons";
-import {useState} from "react";
+import {useEffect, useState} from "react";
 import {useDispatch, useSelector} from "react-redux";
 import {storeSlice} from "../../stores/StoreReducer";
-import {useNavigate} from "react-router-native";
+import {useNavigate, useSearchParams} from "react-router-native";
+import SORT_TYPE from "../../constant/sortType";
+import {useFindProductByCriteriaMutation} from "../../stores/API/service";
 
 function Footer() {
     const dispatch = useDispatch();
-    const pageIndex = useSelector((state) => state.storeReducer.pageIndex);
-
     const navigate= useNavigate();
+    const pageIndex = useSelector((state) => state.storeReducer.pageIndex);
+    const listProduct = useSelector((state) => state.storeReducer.listProduct);
+    const [searchParams, setSearchParams] = useSearchParams();
+    // API
+    const [findProductByCriteria, findProductByCriteriaResult] = useFindProductByCriteriaMutation();
+
+    // const getData = async () => {
+    //     await findProductByCriteria({
+    //         nameProductOrCategory: null,
+    //         category: [],
+    //         sortBy: SORT_TYPE.NEW,
+    //     }).unwrap()
+    //         .then((originalPromiseResult) => {
+    //             dispatch(storeSlice.actions.setListProduct(originalPromiseResult.listProduct));
+    //             dispatch(storeSlice.actions.setCriteria({
+    //                 nameProductOrCategory: null,
+    //                 category: [],
+    //                 sortBy: SORT_TYPE.NEW,
+    //             }));
+    //
+    //         })
+    //         .catch((ex) => {
+    //             console.log("Exception: ,", ex)
+    //         })
+    // }
 
     const handleOnPressHome = () => {
         dispatch(storeSlice.actions.setPageIndex("Home"));
         dispatch(storeSlice.actions.nextPage('/'));
+        // getData();
         navigate(`/`);
     }
 

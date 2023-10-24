@@ -8,8 +8,8 @@ import {storeSlice} from "../../../stores/StoreReducer";
 
 export default function Product({value}) {
     const dispatch = useDispatch();
-
     const navigate = useNavigate();
+
     const productName = value.name.length > 25 ? (value.name.substring(0, 22) + '...') : value.name;
     const price = (((100-value.discount)/100) * value.price).toLocaleString('vi-VN');
     // const price = (value.price).toLocaleString('vi-VN');
