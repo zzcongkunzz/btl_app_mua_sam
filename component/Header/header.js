@@ -13,10 +13,12 @@ function Header() {
     const [searchParams, setSearchParams] = useSearchParams();
     const navigate = useNavigate();
     const location = useLocation();
+
     const pageHistory = useSelector((state) => state.storeReducer.pageHistory);
     const user = useSelector((state) => state.storeReducer.user);
     const listCart = useSelector((state) => state.storeReducer.listCart);
     const cartNotication = useSelector((state) => state.storeReducer.cartNotication);
+    const criteria = useSelector((state) => state.storeReducer.criteria);
 
     const [nameProductOrCategory, setNameProductOrCategory] = useState(searchParams.get('nameProductOrCategory') ?? '');
     const [onFocusSearchInput, setOnFocusSearchInput] = useState(false);
@@ -52,8 +54,8 @@ function Header() {
     }, []);
 
     useEffect(() => {
-        setNameProductOrCategory(searchParams.get('nameProductOrCategory'));
-    }, [pageHistory]);
+        setNameProductOrCategory(criteria.nameProductOrCategory);
+    }, [criteria.nameProductOrCategory]);
 
     const handleFocusSearchInput = () => {
         setOnFocusSearchInput(true);
@@ -86,23 +88,11 @@ function Header() {
 
     const handleOnPressSearchIcon = async () => {
 
-        await findProductByCriteria({
+        dispatch(storeSlice.actions.setCriteria({
             nameProductOrCategory: nameProductOrCategory != "" ? nameProductOrCategory : null,
             category: [],
             sortBy: SORT_TYPE.NEW,
-        }).unwrap()
-            .then((originalPromiseResult) => {
-                dispatch(storeSlice.actions.setListProduct(originalPromiseResult.listProduct));
-                dispatch(storeSlice.actions.setCriteria({
-                    nameProductOrCategory: nameProductOrCategory,
-                    category: [],
-                    sortBy: SORT_TYPE.NEW,
-                }));
-
-            })
-            .catch((ex) => {
-                console.log("Exception: ,", ex)
-            })
+        }));
 
         searchInputRef.current.blur();
 

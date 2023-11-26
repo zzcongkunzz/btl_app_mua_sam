@@ -14,6 +14,9 @@ function Footer() {
     const pageIndex = useSelector((state) => state.storeReducer.pageIndex);
     const listProduct = useSelector((state) => state.storeReducer.listProduct);
     const [searchParams, setSearchParams] = useSearchParams();
+
+    const criteria = useSelector((state) => state.storeReducer.criteria);
+
     // API
     const [findProductByCriteria, findProductByCriteriaResult] = useFindProductByCriteriaMutation();
 
@@ -40,7 +43,11 @@ function Footer() {
     const handleOnPressHome = () => {
         dispatch(storeSlice.actions.setPageIndex("Home"));
         dispatch(storeSlice.actions.nextPage('/'));
-        // getData();
+        dispatch(storeSlice.actions.setCriteria({
+            nameProductOrCategory: null,
+            category: [],
+            sortBy: SORT_TYPE.NEW,
+        }));
         navigate(`/`);
     }
 

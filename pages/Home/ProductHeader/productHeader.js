@@ -11,15 +11,16 @@ import {useFindProductByCriteriaMutation, useGetCategoryMutation} from "../../..
 function ProductHeader() {
     const dispatch = useDispatch();
 
-    const [productHeaderItemFollow, setProductHeaderItemFollow] = useState('Sort By New');
+    const listProduct = useSelector((state) => state.storeReducer.listProduct);
+    const criteria = useSelector((state) => state.storeReducer.criteria);
+
+    // const [productHeaderItemFollow, setProductHeaderItemFollow] = useState(SORT_TYPE.NEW);
     const [priceIncreasesDecreases, setPriceIncreasesDecreases] = useState(false);
     const [productHeaderCategoryFollow, setProductHeaderCategoryFollow] = useState(false);
     const [categoryExpandMore, setCategoryExpandMore] = useState(false);
-    const [categorySelected, setCategorySelected] = useState([]);
+    const [categorySelected, setCategorySelected] = useState(criteria.category);
     const [listCategory, setListCategory] = useState([]);
 
-    const listProduct = useSelector((state) => state.storeReducer.listProduct);
-    const criteria = useSelector((state) => state.storeReducer.criteria);
 
     // API
     const [findProductByCriteria, findProductByCriteriaResult] = useFindProductByCriteriaMutation();
@@ -41,34 +42,22 @@ function ProductHeader() {
     }, []);
 
     useEffect(() => {
-        setProductHeaderItemFollow('Sort By New');
-    }, [criteria.nameProductOrCategory]);
-
-    useEffect(() => {
-        if (productHeaderItemFollow !== 'Sort By Price') {
-            setPriceIncreasesDecreases(false);
+        if(criteria.category.length === 0){
+            setCategorySelected([]);
+            setProductHeaderCategoryFollow(false);
         }
-    }, [productHeaderItemFollow])
+
+    }, [criteria.category]);
+
 
     const handleOnPressSortByNew = async () => {
 
-        await findProductByCriteria({
+        dispatch(storeSlice.actions.setCriteria({
             ...criteria,
             sortBy: SORT_TYPE.NEW,
-        }).unwrap()
-            .then((originalPromiseResult) => {
-                dispatch(storeSlice.actions.setListProduct(originalPromiseResult.listProduct));
-                dispatch(storeSlice.actions.setCriteria({
-                    ...criteria,
-                    sortBy: SORT_TYPE.NEW,
-                }));
+        }));
 
-            })
-            .catch((ex) => {
-                console.log("Exception: ,", ex)
-            })
-
-        setProductHeaderItemFollow('Sort By New');
+        // setProductHeaderItemFollow('Sort By New');
         if (categoryExpandMore) {
             handleOnPressCategory();
         }
@@ -77,23 +66,12 @@ function ProductHeader() {
 
     const handleOnPressSortByBestseller = async () => {
 
-        await findProductByCriteria({
+        dispatch(storeSlice.actions.setCriteria({
             ...criteria,
             sortBy: SORT_TYPE.HOT_SELLING,
-        }).unwrap()
-            .then((originalPromiseResult) => {
-                dispatch(storeSlice.actions.setListProduct(originalPromiseResult.listProduct));
-                dispatch(storeSlice.actions.setCriteria({
-                    ...criteria,
-                    sortBy: SORT_TYPE.HOT_SELLING,
-                }));
+        }));
 
-            })
-            .catch((ex) => {
-                console.log("Exception: ,", ex)
-            })
 
-        setProductHeaderItemFollow('Sort By Bestseller');
         if (categoryExpandMore) {
             handleOnPressCategory();
         }
@@ -101,31 +79,21 @@ function ProductHeader() {
     }
 
     const handleOnPressSortByPrice = async () => {
+
         let sortPrice = SORT_TYPE.PRICE_ASC;
 
-        if (productHeaderItemFollow === 'Sort By Price') {
-            const temp = !priceIncreasesDecreases
-            setPriceIncreasesDecreases(temp);
-            sortPrice = temp === false ? SORT_TYPE.PRICE_ASC : SORT_TYPE.PRICE_DESC;
+        if(criteria.sortBy === SORT_TYPE.PRICE_ASC){
+            sortPrice = SORT_TYPE.PRICE_DESC;
+        }
+        else if(criteria.sortBy === SORT_TYPE.PRICE_DESC){
+            sortPrice = SORT_TYPE.PRICE_ASC;
         }
 
-        await findProductByCriteria({
+        dispatch(storeSlice.actions.setCriteria({
             ...criteria,
             sortBy: sortPrice,
-        }).unwrap()
-            .then((originalPromiseResult) => {
-                dispatch(storeSlice.actions.setListProduct(originalPromiseResult.listProduct));
-                dispatch(storeSlice.actions.setCriteria({
-                    ...criteria,
-                    sortBy: sortPrice,
-                }));
+        }));
 
-            })
-            .catch((ex) => {
-                console.log("Exception: ,", ex)
-            })
-
-        setProductHeaderItemFollow('Sort By Price');
         if (categoryExpandMore) {
             handleOnPressCategory();
         }
@@ -141,21 +109,11 @@ function ProductHeader() {
 
         //khi đóng category
         if (temp === false) {
-            await findProductByCriteria({
+            dispatch(storeSlice.actions.setCriteria({
                 ...criteria,
-                category: (categorySelected.length > 0) ? categorySelected : null,
-            }).unwrap()
-                .then((originalPromiseResult) => {
-                    dispatch(storeSlice.actions.setListProduct(originalPromiseResult.listProduct));
-                    dispatch(storeSlice.actions.setCriteria({
-                        ...criteria,
-                        category: categorySelected,
-                    }));
+                category: categorySelected,
+            }));
 
-                })
-                .catch((ex) => {
-                    console.log("Exception: ,", ex)
-                })
         }
 
         setCategoryExpandMore(temp);
@@ -187,7 +145,7 @@ function ProductHeader() {
                 >
                     <Text
                         style={[
-                            productHeaderItemFollow === 'Sort By New' && styles.productHeaderItemFollowText
+                            criteria.sortBy === SORT_TYPE.NEW && styles.productHeaderItemFollowText
                         ]}
                     >Mới nhất</Text>
                 </TouchableOpacity>
@@ -198,7 +156,7 @@ function ProductHeader() {
                 >
                     <Text
                         style={[
-                            productHeaderItemFollow === 'Sort By Bestseller' && styles.productHeaderItemFollowText
+                            criteria.sortBy === SORT_TYPE.HOT_SELLING && styles.productHeaderItemFollowText
                         ]}
                     >Bán chạy</Text>
                 </TouchableOpacity>
@@ -209,16 +167,17 @@ function ProductHeader() {
                 >
                     <Text
                         style={[
-                            productHeaderItemFollow === 'Sort By Price' && styles.productHeaderItemFollowText
+                            (criteria.sortBy === SORT_TYPE.PRICE_ASC || criteria.sortBy === SORT_TYPE.PRICE_DESC) && styles.productHeaderItemFollowText
                         ]}
                     >Giá</Text>
                     <View
                         style={[styles.productHeaderItemIcon]}
                     >
-                        {priceIncreasesDecreases ?
+                        {criteria.sortBy === SORT_TYPE.PRICE_DESC ?
                             <AntDesign name="arrowdown" size={20} color="red"/> :
-                            <AntDesign name="arrowup" size={20}
-                                       color={productHeaderItemFollow === 'Sort By Price' ? "red" : "black"}/>
+                            criteria.sortBy === SORT_TYPE.PRICE_ASC ?
+                                <AntDesign name="arrowup" size={20} color="red"/> :
+                                <AntDesign name="arrowup" size={20} color="black"/>
                         }
                     </View>
                 </TouchableOpacity>
@@ -229,7 +188,7 @@ function ProductHeader() {
                 >
                     <Text
                         style={[
-                            productHeaderCategoryFollow && styles.productHeaderItemFollowText
+                            (productHeaderCategoryFollow) && styles.productHeaderItemFollowText
                         ]}
                     >{} Danh mục</Text>
 

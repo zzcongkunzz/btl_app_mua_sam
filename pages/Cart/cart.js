@@ -52,7 +52,7 @@ export default function Cart() {
                             isChecked : false,
                         };
                     })));
-                    console.log("originalPromiseResult.listCart", originalPromiseResult.listCart)
+                    // console.log("originalPromiseResult.listCart", originalPromiseResult.listCart)
                 })
                 .catch((ex) => {
                     console.log("Exception: ,", ex)

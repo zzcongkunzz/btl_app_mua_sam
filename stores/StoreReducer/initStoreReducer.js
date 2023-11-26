@@ -1,3 +1,5 @@
+import SORT_TYPE from "../../constant/sortType";
+
 export const initStoreReducer = {
     ACCESS_TOKEN: null,
     roles: null,
@@ -5,7 +7,7 @@ export const initStoreReducer = {
     criteria:{
         nameProductOrCategory: null,
         category: [],
-        sortBy: null,
+        sortBy:  SORT_TYPE.NEW,
     },
     listCart: [],
     cartNotication: 0,

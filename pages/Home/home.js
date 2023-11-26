@@ -22,17 +22,10 @@ function Home() {
     useEffect(() => {
         const getData = async () => {
             await findProductByCriteria({
-                nameProductOrCategory: searchParams.get('nameProductOrCategory'),
-                category: [],
-                sortBy: SORT_TYPE.NEW,
+                ...criteria
             }).unwrap()
                 .then((originalPromiseResult) => {
                     dispatch(storeSlice.actions.setListProduct(originalPromiseResult.listProduct));
-                    dispatch(storeSlice.actions.setCriteria({
-                        nameProductOrCategory: null,
-                        category: [],
-                        sortBy: SORT_TYPE.NEW,
-                    }));
 
                 })
                 .catch((ex) => {
@@ -40,7 +33,7 @@ function Home() {
                 })
         }
         getData();
-    }, [pageHistory]);
+    }, [criteria]);
 
     return (
         <View

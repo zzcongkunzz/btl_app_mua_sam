@@ -24,13 +24,18 @@ const styles = StyleSheet.create({
     },
     productDetailsContent: {
         backgroundColor: "#fff",
+        width: "100%",
         paddingHorizontal: 5,
         paddingVertical: 10,
         justifyContent: "center",
-        alignItems: "center",
+        // alignItems: "center",
         color: "#ffb440"
     },
     productDetailsName: {
+        // backgroundColor: "#000",
+        width: "100%",
+        paddingHorizontal: 10,
+        textAlign: "left",
         fontWeight: 400,
         lineHeight: 18,
     },
