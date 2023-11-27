@@ -123,6 +123,7 @@ export default function UserLogin() {
                     dispatch(storeSlice.actions.setUser(originalPromiseResult.users));
                     // dispatch(storeSlice.actions.setAccessToken("access token"));
                     ToastAndroid.show('Lưu thành công!', ToastAndroid.SHORT, ToastAndroid.CENTER,);
+                    setChangeInformation(false);
                 }
                 else {
                     ToastAndroid.show('Lưu thất bại!', ToastAndroid.SHORT, ToastAndroid.CENTER,);

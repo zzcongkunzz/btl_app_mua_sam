@@ -70,8 +70,8 @@ export default function ProductDetails() {
         value = value.replace(/\s|[^0-9]/, '');
         if (value === '' || value === '0') {
             setQuantityPurchased("1");
-        } else if (Number(value) >= 999) {
-            setQuantityPurchased("999")
+        } else if (Number(value) >= productValue?.warehouseQuantity) {
+            setQuantityPurchased(`${productValue?.warehouseQuantity}`)
         } else {
             value = Number(value);
             setQuantityPurchased('' + value);
@@ -85,7 +85,7 @@ export default function ProductDetails() {
     }
 
     const handleOnPressQuantityPurchasedPlus = () => {
-        if (Number(quantityPurchased) < 999) {
+        if (Number(quantityPurchased) < productValue?.warehouseQuantity) {
             setQuantityPurchased(`${Number(quantityPurchased) + 1}`);
         }
     }
